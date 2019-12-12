@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ImageBackground, Text, Dimensions, ScrollView, KeyboardAvoidingView, TouchableOpacity, Image, TouchableWithoutFeedback, LayoutAnimation, Platform } from 'react-native';
+import { View, ImageBackground, Text, Dimensions, ScrollView, KeyboardAvoidingView,AsyncStorage, TouchableOpacity, Image, TouchableWithoutFeedback, LayoutAnimation, Platform } from 'react-native';
 import { Icon, Button, Header, Input, CheckBox } from 'react-native-elements'
 import { colors } from '../common/theme';
 import * as ImagePicker from 'expo-image-picker';
@@ -51,27 +51,66 @@ export default class UploadDocs extends React.Component {
             this._updateImage(key, result)
         }
     };
+    saveImages(){
 
+    }
     _updateImage(state, val) {
         debugger
         switch (state) {
             case "vImage":
-                this.setState({ vImage: val })
+                this.setState({ vImage: val },()=>{
+                    try {
+                        await AsyncStorage.setItem('vImage', val.base64);
+                      } catch (error) {
+                      
+                      }
+                })
+
                 break;
             case "vCategory":
-                this.setState({ vCategory: val })
+                this.setState({ vCategory: val },()=>{
+                    try {
+                        await AsyncStorage.setItem('vCategory', val.base64);
+                      } catch (error) {
+                      
+                      }
+                })
                 break;
             case "driverLicense":
-                this.setState({ driverLicense: val })
+                this.setState({ driverLicense: val },()=>{
+                    try {
+                        await AsyncStorage.setItem('driverLicense', val.base64);
+                      } catch (error) {
+                      
+                      }
+                })
                 break;
             case "personalID":
-                this.setState({ personalID: val })
+                this.setState({ personalID: val },()=>{
+                        try {
+                            await AsyncStorage.setItem('personalID', val.base64);
+                          } catch (error) {
+                          
+                          }
+                })
                 break;
             case "vPlateNumber":
-                this.setState({ vPlateNumber: val })
+                this.setState({ vPlateNumber: val },()=>{
+                        try {
+                            await AsyncStorage.setItem('vPlateNumber', val.base64);
+                          } catch (error) {
+                          
+                          }
+                })
                 break;
             case "noCreminal":
-                this.setState({ noCreminal: val })
+                this.setState({ noCreminal: val },()=>{
+                        try {
+                            await AsyncStorage.setItem('noCreminal', val.base64);
+                          } catch (error) {
+                          
+                          }
+                })
                 break;
             default:
         }
@@ -221,7 +260,7 @@ export default class UploadDocs extends React.Component {
                     <View>
                         <Text style={{ color: "#0D1C60", textAlign: 'center', fontSize: 24, marginTop: 14, fontWeight: 'bold' }}>No criminal record</Text>
                     </View>
-                    <TouchableOpacity style={styles.button}>
+                    <TouchableOpacity onPress={()=>{this.saveImages()}} style={styles.button}>
                         <Text style={{ color: "white" }}>Continue</Text>
                     </TouchableOpacity>
                 </ScrollView>

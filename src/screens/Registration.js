@@ -7,12 +7,20 @@ export default class RegistrationPage extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-          loading: false
+          loading: false,
         }
         this.login = false;
     }
 
     async clickRegister(fname, lname, mobile, email, password) {
+      try {
+        await AsyncStorage.setItem('fname', fname);
+        await AsyncStorage.setItem('lname', lname);
+        await AsyncStorage.setItem('email', email);
+        await AsyncStorage.setItem('password', password);
+      } catch (error) {
+        // Error saving data
+      }
       const { navigation } = this.props;
       let data = navigation.getParam('phoneId', null);
         this.setState({loading: true})

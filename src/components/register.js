@@ -13,6 +13,8 @@ export default class Registration extends React.Component {
         this.state = {
             check:false,
             email: '',
+            fname:'',
+            lname:'',
             mobile: '',
             phoneId: '',
             password: '',
@@ -104,6 +106,16 @@ export default class Registration extends React.Component {
 
     //register button press for validation
     onPressRegister() {
+        if(!this.state.check){
+            Alert.alert(
+                'Warning',
+                'Please accepet condtion and terms and condtion',
+                [
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                {cancelable: true},
+              );
+        }
         const { onPressRegister } = this.props;
         LayoutAnimation.easeInEaseOut();
         const fnameValid = this.validateFirstName();
@@ -115,14 +127,14 @@ export default class Registration extends React.Component {
 
         if (emailValid && fnameValid && lnameValid && passwordValid && cnfPwdValid) {
             //register function of smart component
-            onPressRegister("", "", "", this.state.email, this.state.password);
-            this.setState({ email: '', password: '', confPassword: '' })
+            onPressRegister(fnameValid, lnameValid, "",emailValid, passwordValid);
+            this.setState({ email: '', password: '', confPassword: '', fname:'' })
         }
     }
     
     agreeCondtionAndTerms() {
         this.setState({
-            check:true
+            check:this.state.check
         })
     }
 
