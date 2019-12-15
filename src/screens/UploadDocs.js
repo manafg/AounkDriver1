@@ -5,6 +5,9 @@ import { colors } from '../common/theme';
 import * as ImagePicker from 'expo-image-picker';
 import Constants from 'expo-constants';
 import * as Permissions from 'expo-permissions';
+import Client from '../API/Client';
+import axios from 'axios';
+
 
 
 var { height } = Dimensions.get('window');
@@ -14,12 +17,12 @@ export default class UploadDocs extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            vImage: null,
+            vehicle_image: null,
             vCategory: null,
-            driverLicense: null,
-            personalID: null,
-            vPlateNumber: null,
-            noCreminal: null
+            driver_license: null,
+            personal_id: null,
+            vehicle_plate_number: null,
+            ncrc: null
         }
         this._pickImage = this._pickImage.bind(this)
     }
@@ -51,66 +54,135 @@ export default class UploadDocs extends React.Component {
             this._updateImage(key, result)
         }
     };
-    saveImages(){
+
+    UploadDocs(Category,val){
+       
 
     }
-    _updateImage(state, val) {
+    
+    
+    _updateImage = async (state, val)  => {
         debugger
+        var bodyFormData = new FormData();
         switch (state) {
-            case "vImage":
-                this.setState({ vImage: val },()=>{
+            case "vehicle_image":
                     try {
-                        await AsyncStorage.setItem('vImage', val.base64);
+                        bodyFormData.append(`${vehicle_image}`, val.uri); 
+                        axios({
+                            method: 'post',
+                            url: `http://api.ibshr.com/api/account/upload-documents/vehicle_image`,
+                            data: bodyFormData,
+                            headers: {
+                            'Content-Type': 'multipart/form-data' ,
+                            Authorization: `Bearer ${token}`}
+                            })
+                            .then(function (response) {
+                                this.setState({ vehicle_image: val })
+                            })
+                            .catch(function (response) {
+                                //handle error
+                                console.log(response);
+                            });
                       } catch (error) {
                       
                       }
-                })
-
                 break;
             case "vCategory":
                 this.setState({ vCategory: val },()=>{
                     try {
-                        await AsyncStorage.setItem('vCategory', val.base64);
+                        this.UploadDocs('vCategory',val)
                       } catch (error) {
                       
                       }
                 })
                 break;
-            case "driverLicense":
-                this.setState({ driverLicense: val },()=>{
+            case "driver_license":
                     try {
-                        await AsyncStorage.setItem('driverLicense', val.base64);
+                        bodyFormData.append(`${driver_license}`, val.uri); 
+                        axios({
+                            method: 'post',
+                            url: `http://api.ibshr.com/api/account/upload-documents/driver_license`,
+                            data: bodyFormData,
+                            headers: {
+                            'Content-Type': 'multipart/form-data' ,
+                            Authorization: `Bearer ${token}`}
+                            })
+                            .then(function (response) {
+                                this.setState({ driver_license: val })
+                            })
+                            .catch(function (response) {
+                                //handle error
+                                console.log(response);
+                            });
                       } catch (error) {
                       
                       }
-                })
                 break;
-            case "personalID":
-                this.setState({ personalID: val },()=>{
+            case "personal_id":
                         try {
-                            await AsyncStorage.setItem('personalID', val.base64);
+                            bodyFormData.append(`${personal_id}`, val.uri); 
+                            axios({
+                                method: 'post',
+                                url: `http://api.ibshr.com/api/account/upload-documents/personal_id`,
+                                data: bodyFormData,
+                                headers: {
+                                'Content-Type': 'multipart/form-data' ,
+                                Authorization: `Bearer ${token}`}
+                                })
+                                .then(function (response) {
+                                    this.setState({ personal_id: val })
+                                })
+                                .catch(function (response) {
+                                    //handle error
+                                    console.log(response);
+                                });
                           } catch (error) {
                           
                           }
-                })
                 break;
-            case "vPlateNumber":
-                this.setState({ vPlateNumber: val },()=>{
+            case "vehicle_plate_number":
                         try {
-                            await AsyncStorage.setItem('vPlateNumber', val.base64);
+                            bodyFormData.append(`${vehicle_plate_number}`, val.uri); 
+                            axios({
+                                method: 'post',
+                                url: `http://api.ibshr.com/api/account/upload-documents/vehicle_plate_number`,
+                                data: bodyFormData,
+                                headers: {
+                                'Content-Type': 'multipart/form-data' ,
+                                Authorization: `Bearer ${token}`}
+                                })
+                                .then(function (response) {
+                                    this.setState({ vehicle_plate_number: val })
+                                })
+                                .catch(function (response) {
+                                    //handle error
+                                    console.log(response);
+                                });
                           } catch (error) {
                           
                           }
-                })
                 break;
-            case "noCreminal":
-                this.setState({ noCreminal: val },()=>{
+            case "ncrc":
                         try {
-                            await AsyncStorage.setItem('noCreminal', val.base64);
+                            bodyFormData.append(`${ncrc}`, val.uri); 
+                            axios({
+                                method: 'post',
+                                url: `http://api.ibshr.com/api/account/upload-documents/ncrc`,
+                                data: bodyFormData,
+                                headers: {
+                                'Content-Type': 'multipart/form-data' ,
+                                Authorization: `Bearer ${token}`}
+                                })
+                                .then(function (response) {
+                                    this.setState({ ncrc: val })
+                                })
+                                .catch(function (response) {
+                                    //handle error
+                                    console.log(response);
+                                });
                           } catch (error) {
                           
                           }
-                })
                 break;
             default:
         }
@@ -130,7 +202,7 @@ export default class UploadDocs extends React.Component {
                 <ScrollView style={styles.scrollViewStyle}>
                     <View style={styles.docsWraper}>
                         <View style={styles.row}>
-                            <TouchableOpacity onPress={() => this._pickImage("vImage")} style={styles.docButton}>
+                            <TouchableOpacity onPress={() => this._pickImage("vehicle_image")} style={styles.docButton}>
                                 <Text style={styles.text}>Vehicle Image</Text>
                             </TouchableOpacity>
                             <TouchableOpacity onPress={() => this._pickImage("vCategory")} style={styles.docButton}>
@@ -138,19 +210,19 @@ export default class UploadDocs extends React.Component {
                             </TouchableOpacity>
                         </View>
                         <View style={styles.row}>
-                            <TouchableOpacity onPress={() => this._pickImage("driverLicense")} s style={styles.docButton}>
+                            <TouchableOpacity onPress={() => this._pickImage("driver_license")} s style={styles.docButton}>
                                 <Text style={[styles.text, { marginTop: 20 }]}>Driver License</Text>
                                 <Text style={styles.subText}>(It should not be expired)</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this._pickImage("personalID")} style={styles.docButton}>
+                            <TouchableOpacity onPress={() => this._pickImage("personal_id")} style={styles.docButton}>
                                 <Text style={styles.text}>Personal ID</Text>
                             </TouchableOpacity>
                         </View>
                         <View style={styles.row}>
-                            <TouchableOpacity onPress={() => this._pickImage("vPlateNumber")} style={styles.docButton}>
+                            <TouchableOpacity onPress={() => this._pickImage("vehicle_plate_number")} style={styles.docButton}>
                                 <Text style={styles.text}>Vehicle Plate Number</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => this._pickImage("noCreminal")} style={styles.docButton}>
+                            <TouchableOpacity onPress={() => this._pickImage("ncrc")} style={styles.docButton}>
                                 <Text style={[styles.text, { marginTop: 20, textAlign: 'center' }]}>No criminal record Certificate</Text>
                             </TouchableOpacity>
                         </View>
@@ -185,7 +257,7 @@ export default class UploadDocs extends React.Component {
                                     />
                                     <Text style={{ textAlign: 'center', marginBottom: 7, fontSize: 14, color: "#A2A2A2" }}>Vehicle Category</Text>
                                 </View> :
-                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.vImage.uri }} />
+                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.vehicle_image.uri }} />
                             }
                         </View>
                         <View style={styles.image}>
@@ -201,7 +273,7 @@ export default class UploadDocs extends React.Component {
                                     />
                                     <Text style={{ textAlign: 'center', marginBottom: 7, fontSize: 14, color: "#A2A2A2" }}>Vehicle Plate Number </Text>
                                 </View> :
-                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.vPlateNumber.uri }} />
+                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.vehicle_plate_number.uri }} />
                             }
                         </View>
 
@@ -220,7 +292,7 @@ export default class UploadDocs extends React.Component {
                                     />
                                     <Text style={{ textAlign: 'center', marginBottom: 7, fontSize: 14, color: "#A2A2A2" }}>Driver License</Text>
                                 </View> :
-                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.driverLicense.uri }} />
+                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.driver_license.uri }} />
                             }
                         </View>
                         <View style={styles.image}>
@@ -236,7 +308,7 @@ export default class UploadDocs extends React.Component {
                                     />
                                     <Text style={{ textAlign: 'center', marginBottom: 7, fontSize: 14, color: "#A2A2A2" }}> Personal ID</Text>
                                 </View> :
-                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.personalID.uri }} />
+                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.personal_id.uri }} />
                             }
 
                         </View>
@@ -253,7 +325,7 @@ export default class UploadDocs extends React.Component {
                                     />
                                     <Text style={{ textAlign: 'center', marginBottom: 7, fontSize: 14, color: "#A2A2A2" }}>Vehicle Image</Text>
                                 </View> :
-                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.noCreminal.uri }} />
+                                <Image style={{ flex: 1, width: undefined, height: undefined }} source={{ uri: this.state.ncrc.uri }} />
                             }
                         </View>
                     </View>

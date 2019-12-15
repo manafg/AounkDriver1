@@ -51,11 +51,11 @@ export default class Registration extends React.Component {
 
     // mobile number validation
     validateMobile() {
-        // const { mobile } = this.state
-        // const mobileValid = (mobile.length == 10)
-        // LayoutAnimation.easeInEaseOut()
-        // this.setState({ mobileValid })
-        // mobileValid || this.mobileInput.shake();
+        const { mobile } = this.state
+        const mobileValid = (mobile.length == 10)
+        LayoutAnimation.easeInEaseOut()
+        this.setState({ mobileValid })
+        mobileValid || this.mobileInput.shake();
         return true
     }
 
@@ -120,21 +120,21 @@ export default class Registration extends React.Component {
         LayoutAnimation.easeInEaseOut();
         const fnameValid = this.validateFirstName();
         const lnameValid = this.validateLastname();
-        // const mobileValid = this.validateMobile();
+        const mobileValid = this.validateMobile();
         const emailValid = this.validateEmail();
         const passwordValid = this.validatePassword();
         const cnfPwdValid = this.validateConfPassword();
 
-        if (emailValid && fnameValid && lnameValid && passwordValid && cnfPwdValid) {
+        if (emailValid && fnameValid && lnameValid && mobileValid &&passwordValid && cnfPwdValid) {
             //register function of smart component
-            onPressRegister(fnameValid, lnameValid, "",emailValid, passwordValid);
-            this.setState({ email: '', password: '', confPassword: '', fname:'' })
+            onPressRegister(this.state.fname, this.state.lname, this.state.mobile ,this.state.email, this.state.password);
+            this.setState({ email: '', password: '',mobile:'', confPassword: '', fname:'' , lname:'' })
         }
     }
     
     agreeCondtionAndTerms() {
         this.setState({
-            check:this.state.check
+            check:!this.state.check
         })
     }
 
@@ -188,6 +188,27 @@ export default class Registration extends React.Component {
                                     secureTextEntry={false}
                                     blurOnSubmit={true}
                                     onSubmitEditing={() => { this.validateLastname(); this.emailInput.focus() }}
+                                    errorStyle={styles.errorMessageStyle}
+                                    inputContainerStyle={styles.inputContainerStyle}
+                                    containerStyle={styles.textInputStyle}
+                                />
+                            </View>
+                            <Text style={{ marginLeft: 47, color: "#7F7F7F" }}>Mobile Number</Text>
+                            <View style={styles.textInputContainerStyle}>
+                               
+                                <Input
+                                    ref={input => (this.mobileInput = input)}
+                                    editable={true}
+                                    underlineColorAndroid={colors.TRANSPARENT}
+                                    placeholder={'Mobile (10 digit)'}
+                                    value={this.state.mobile}
+                                    keyboardType={'number-pad'}
+                                    inputStyle={styles.inputTextStyle}
+                                    onChangeText={(text)=>{this.setState({mobile: text})}}
+                                    errorMessage={this.state.mobileValid ? null : 'Please enter a 10 digit mobile number'}
+                                    secureTextEntry={false}
+                                    blurOnSubmit={true}
+                                    onSubmitEditing={() => { this.validateMobile(); this.passwordInput.focus()}}
                                     errorStyle={styles.errorMessageStyle}
                                     inputContainerStyle={styles.inputContainerStyle}
                                     containerStyle={styles.textInputStyle}

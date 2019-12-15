@@ -113,7 +113,7 @@ var { width, height } = Dimensions.get('window');
             }
         },     
     },{
-        initialRouteName: 'Reg',
+        initialRouteName: 'Login',
     });
 
     const DrawerRoutes = {

@@ -13,35 +13,15 @@ export default class RegistrationPage extends React.Component {
     }
 
     async clickRegister(fname, lname, mobile, email, password) {
-      try {
-        await AsyncStorage.setItem('fname', fname);
-        await AsyncStorage.setItem('lname', lname);
-        await AsyncStorage.setItem('email', email);
-        await AsyncStorage.setItem('password', password);
-      } catch (error) {
-        // Error saving data
-      }
-      const { navigation } = this.props;
-      let data = navigation.getParam('phoneId', null);
-        this.setState({loading: true})
-        var regData = {
-          email:"D@D.com",
-          password: "manafG1992@", 
-          phoneId:"5db235fe8bc60d1135dcd683"
-        }
-        Client.post('account/user/create', regData).then((res)=>{
-          let profile = 
-            {
-              "firstName": "David",
-              "lastName": "Driver",
-              "userId": res.data.user._id
-            }
-            Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`
-            Client.post(`account/user/driver/profile`,profile).then((res)=>{
-            this.props.navigation.navigate('Login')
-          })
-        }).catch((res)=>{
-        })
+      debugger
+      console.log(fname, lname, mobile,email,password)
+         this.props.navigation.navigate('PinCodeScreen', {
+          fname: fname,
+          lname: lname,
+          email: email,
+          password: password,
+          mobile: mobile,
+        });
     }
 
   

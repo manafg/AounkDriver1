@@ -2,66 +2,88 @@ import React from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { Icon } from 'react-native-elements'
 import { colors } from '../common/theme';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
+import MapViewDirections from 'react-native-maps-directions';
 
 
 export default class RideList extends React.Component {
 
     constructor(props){
         super(props);
-    }
+        this.state={
+            marginBottom:1,
+            region: {
+                latitude: 31.963158,
+                longitude: 35.930359,
+                latitudeDelta: 0.9922,
+                longitudeDelta: 0.9421,
+            },
+        }
+      }
 
-    //on press of each item function
-    onPressButton(item, index) {
-        const { onPressButton } = this.props;
-        onPressButton(item, index)
-    }
-
+      onPressButton(item, index) {
+          const { onPressButton } = this.props;
+          onPressButton(item, index)
+      }
     
     //flatlist return function
     newData = ({item, index}) =>{
+        let Size = '';
+        if(item.size == "L") {
+            Size = "Large Size"
+        } else if(item.size == "M"){
+            Size = "Medium Size"
+        } else {
+            Size = "Small Size"
+        }
+        let region ={
+            latitude: parseInt(item.current.lat),
+            longitude: parseInt(item.current.lng),
+            latitudeDelta: 0.9922,
+            longitudeDelta: 0.9421,
+        }
+       const { onPressButton } = this.props;
         return(
-        <TouchableOpacity style={styles.iconClickStyle} onPress={()=>this.onPressButton(item,index)}>
-            <View style={styles.iconViewStyle}>
-                <Icon
-                    name='car-sports'
-                    type='material-community'
-                    color={colors.DARK}
-                    size={35}
+        <View style={{flex:1, height:150, marginBottom:10}}>  
+        <View style={{flex:1, flexDirection:'row',justifyContent:'space-between', paddingTop:10, paddingLeft:5, paddingRight:5}}>
+            <Text style={{textAlign:'left', marginRight:50, fontSize:16}}>{item.endTime.substring(0, item.endTime.length - 12)}</Text>
+            <View></View>
+            <Text style={{textAlign:'right', fontSize:16, color: '#70B32F'}}>{parseFloat(item.price).toFixed(2)} JOD</Text>
+        </View>
+        <Text style={{paddingLeft:5, color:"#6F6F6F", fontSize:16, paddingBottom:5}}>{Size}</Text>
+            <MapView
+                provider={PROVIDER_GOOGLE}
+                style={[styles.map,{ marginBottom: this.state.marginBottom }]}
+                region={region}
+                onMapReady={() => this.setState({ marginBottom: 1 })}
+            >
+                <Marker.Animated
+                    coordinate={{latitude: parseInt(item.current.lat), longitude: parseInt(item.current.lng)}}
+                    image={require('../../assets/images/rsz_2red_pin.png')}
+                    style={{width:400}}
                 />
-            </View>
-            <View style={styles.flexViewStyle}>
-                <View style={styles.textView1}>
-
-                    <Text style={[styles.textStyle,styles.dateStyle]}>{new Date(item.tripdate).toLocaleString()}</Text>
-                    <View style={[styles.picupStyle,styles.position]}>
-                        <View style={styles.greenDot}/>
-                        <Text style={[styles.picPlaceStyle,styles.placeStyle]}>{item.pickup.add ? item.pickup.add : ""}</Text>
-                    </View>
-                    <View style={[styles.dropStyle,styles.textViewStyle]}>
-                        <View style={[styles.redDot,styles.textPosition]}/>
-                        <Text style={[styles.dropPlaceStyle,styles.placeStyle]}>{item.drop.add ? item.drop.add : ""}</Text>
-                    </View>
-
-                </View>
-                <View style={styles.textView2}>
-                    <Text style={[styles.fareStyle,styles.dateStyle]}>$ {item.trip_cost}</Text>
-                    {
-                        item.cancel == 'true'?
-                        <Image
-                            style={styles.cancelImageStyle}
-                            source={require('../../assets/images/cancel.png')}
-                        />
-                        :
-                        null
-                    }
-                </View>
-            </View>
-        </TouchableOpacity>
+                  <MapViewDirections
+                            origin={{latitude: parseInt(item.current.lat), longitude: parseInt(item.current.long)}}
+                            destination={{latitude: parseInt(item.destination.lat), longitude: parseInt(item.destination.lng)}}
+                            apikey={'AIzaSyDZ7HSZZafEkBmuwD2CdHrLJNn3kEm39Fo'}
+                />
+            
+                    <Marker.Animated
+                    coordinate={{latitude: parseInt(item.destination.lat), longitude: parseInt(item.destination.lng)}}
+                    image={require('../../assets/images/available_car.png')}
+                    style={{width:400}}
+                />
+          
+             
+            </MapView>
+            <View style={{backgroundColor:'grey', width:'100%', marginTop:10, height:2}}></View>
+        </View>
         )
     }
 
     render() {   
-        const { data } = this.props;
+        const {data} =this.props
+        
         return(
             <View style={styles.textView3}>
                 <FlatList
@@ -74,107 +96,11 @@ export default class RideList extends React.Component {
     }
 };
 
-//style for this component
 const styles = StyleSheet.create({
-    textStyle:{
-        fontSize:18,
-    },
-    fareStyle:{
-        fontSize:18,
-    },
-    carNoStyle:{
-        marginLeft:45,
-        fontSize:13,
-        marginTop:10
-    },
-    picupStyle:{
-        flexDirection:'row',
-    },
-    picPlaceStyle:{
-    color: colors.GREY.secondary
-    },
-    dropStyle:{
-    flexDirection:'row',
-    },
-    drpIconStyle:{
-    color: colors.RED,
-    fontSize:20
-    },
-    dropPlaceStyle:{
-    color: colors.GREY.secondary
-    },
-    greenDot:{
-        alignSelf:'center',
-        borderRadius:10,
-        width:10,
-        height: 10,
-        backgroundColor: colors.GREEN.default
-    },
-    redDot:{
-        borderRadius:10,
-        width:10,
-        height: 10,
-        backgroundColor: colors.RED
-    
-    },
-    logoStyle:{
-        flexDirection:'row',
-        justifyContent:'space-between',
-    },
-    iconClickStyle:{
-        flex: 1, 
-        flexDirection: 'row'
-    },
-    flexViewStyle:{
-        flex: 7, 
-        flexDirection: 'row',
-        borderBottomColor:colors.GREY.secondary,
-        borderBottomWidth:1,
-        marginTop:10,
-        marginLeft:5
-    },
-    dateStyle:{
-        fontFamily:'Roboto-Bold',
-        color:colors.GREY.default
-    },
-    carNoStyle:{
-        fontFamily:'Roboto-Regular',
-        fontSize: 12,
-        marginTop:8,
-        color:colors.GREY.default
-    },
-    placeStyle:{
-        marginLeft:10,
-        fontFamily:'Roboto-Regular',
-        fontSize:16,
-        alignSelf:'center'
-    },
-    textViewStyle:{
-        marginTop:10,
-        marginBottom:10
-    },
-    cancelImageStyle:{
-        width: 50, 
-        height: 50,
-        marginRight:20,
-        marginTop:10
-    },
-    iconViewStyle:{
-        flex: 1,marginTop:10
-    },
-    textView1:{
-        flex: 5.5
-    },
-    textView2:{
-        flex: 1.5
-    },
     textView3:{
-        flex: 1
+        flex: 1,
     },
-    position:{
-        marginTop:20
+    map: {
+        flex: 3,
     },
-    textPosition:{
-        alignSelf:'center'
-    }
 });
