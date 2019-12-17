@@ -26,7 +26,6 @@ export default class NotificationPage extends React.Component {
 
         if (val == "on") {
             Client.patch(`account/activity-status/ONLINE`, {}).then((res) => {
-                debugger
                 this.setState({ lineStatus: val })
             }).catch((res) => {
             })

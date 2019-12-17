@@ -13,7 +13,6 @@ export default class RegistrationPage extends React.Component {
     }
 
     async clickRegister(fname, lname, mobile, email, password) {
-      debugger
       console.log(fname, lname, mobile,email,password)
          this.props.navigation.navigate('PinCodeScreen', {
           fname: fname,

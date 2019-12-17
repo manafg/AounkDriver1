@@ -1,6 +1,6 @@
 import React from 'react';
 import { Text, View, StyleSheet, Image, TouchableOpacity, Switch, Alert, Dimensions, FlatList, TouchableHighlight, StatusBar, TouchableWithoutFeedback } from 'react-native';
-import { Button, Header, Icon, PricingCard } from 'react-native-elements';
+import { Button, Header, Icon, PricingCard, Input } from 'react-native-elements';
 import Polyline from '@mapbox/polyline';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import { colors } from '../common/theme';
@@ -20,9 +20,11 @@ import AcceptModal from '../components/AcceptModal';
 import ActiveModal from '../components/ActiveModal';
 import FinishModal from '../components/FinishModal';
 import RateModal from '../components/RateModal';
+import getDirections from 'react-native-google-maps-directions'
 
 
-const SOCKET_URL = 'https://api.ibshr.com';
+
+const SOCKET_URL = 'http://apis.aounak.com';
 let conected = false;
 
 var { width, height } = Dimensions.get('window');
@@ -48,6 +50,7 @@ export default class DriverTripAccept extends React.Component {
                 longitudeDelta: 0.9421,
             },
             newReq: false,
+            messageShow:false,
             fareScreen: false,
             startTrip: false,
             completeTrip: false,
@@ -79,7 +82,10 @@ export default class DriverTripAccept extends React.Component {
         this.onPressAccept = this.onPressAccept.bind(this)
         this.onStart = this.onStart.bind(this);
         this.onComp = this.onComp.bind(this);
-        this._rate = this._rate.bind(this)
+        this._rate = this._rate.bind(this);
+        this.handleGetDirections= this.handleGetDirections.bind(this);
+        this._showMessage = this._showMessage.bind(this);
+        this._hideMessage = this._hideMessage.bind(this);
         // if required
         // this.getDirections("22.1884979,88.061018", "22.0082,87.9784");
 
@@ -100,6 +106,44 @@ export default class DriverTripAccept extends React.Component {
         }
     }
 
+    _hideMessage(){
+        this.setState({messageShow:false})
+    }
+
+    _showMessage(){
+        this.setState({messageShow:true})
+    }
+    
+    _writeMessage(val){
+        this.setState({message:val})
+    }
+
+    handleGetDirections = (source, destination) => {
+        const data = {
+           source: {
+            latitude: this.state.recivedNewReq.data.passenger_location.lat,
+            longitude: this.state.recivedNewReq.data.passenger_location.lng
+          },
+          destination: {
+            latitude: this.state.recivedNewReq.data.passenger_destination.lat,
+            longitude: this.state.recivedNewReq.data.passenger_destination.lng 
+          },
+          params: [
+            {
+              key: "travelmode",
+              value: "driving"        // may be "walking", "bicycling" or "transit" as well
+            },
+            {
+              key: "dir_action",
+              value: "navigate"       // this instantly initializes navigation using the given travel mode
+            }
+          ]
+        }
+     
+        getDirections(data)
+    }
+
+    
     listen() {
         this.socket.on('show_notification', (val) => {
             console.log(val)
@@ -132,7 +176,6 @@ export default class DriverTripAccept extends React.Component {
 
     checkStatus() {
         Client.get(`account/activity-status`, {}).then((res) => {
-            debugger
             res.data.my_location = res.data.driver_location
             res.data.my_location.lng = res.data.driver_location.lng
             if (res.data.request_status == "DECLINED") { }
@@ -146,16 +189,15 @@ export default class DriverTripAccept extends React.Component {
                 this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: false, fareScreen: true })
             }
         }).catch((res) => {
-            debugger
 
         })
 
     }
+
     setOnline(val) {
 
         if (val == "on") {
             Client.patch(`account/activity-status/ONLINE`, {}).then((res) => {
-                debugger
                 this.setState({ online: val })
             }).catch((res) => {
             })
@@ -171,7 +213,6 @@ export default class DriverTripAccept extends React.Component {
 
     }
     onStart() {
-        debugger
         Client.patch(`requests/truck/${this.state.recivedNewReq.data.requestId}/start`).then((res) => {
             this.setState({ startTrip: false, completeTrip: true, newReq: false, fareScreen: false });
             setTimeout(() => {
@@ -306,10 +347,8 @@ export default class DriverTripAccept extends React.Component {
 
 
     render() {
-        debugger
-        if (this.state.recivedNewReq) {
-            debugger
-        }
+        let status= this.state.online == "on"? "Online" : "Offline";
+        let color = this.state.online == "on"? '#72BE44' : "#949494";
         let name = this.state.recivedNewReq ? this.state.recivedNewReq.data.profile.name : "Manaf Hgh";
         let currentLat = this.state.recivedNewReq ? this.state.recivedNewReq.data.passenger_location.lat : 31.9265336;
         let currentLng = this.state.recivedNewReq ? this.state.recivedNewReq.data.passenger_location.lng : 35.9589416;
@@ -347,8 +386,8 @@ export default class DriverTripAccept extends React.Component {
                     innerContainerStyles={styles.headerInnerStyle}
                 />
                 
-                <View style={{ width: '100%', textAlign: 'center', justifyContent: 'center', backgroundColor: '#72BE44', height: 25 }}>
-                    <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>You are Online </Text>
+                <View style={{ width: '100%', textAlign: 'center', justifyContent: 'center', backgroundColor: color, height: 25 }}>
+                    <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>You are {status} </Text>
                 </View>
 
                 <View style={styles.mapcontainer}>
@@ -395,7 +434,29 @@ export default class DriverTripAccept extends React.Component {
                         button={{ title: 'Finish', }}
                     />
                 </Modal>
-
+                <Modal
+                    testID={'modal'}
+                    isVisible={this.state.messageShow}
+                    backdropColor="#B4B3DB"
+                    backdropOpacity={0.8}
+                    animationIn="zoomInDown"
+                    animationOut="zoomOutUp"
+                    animationInTiming={600}
+                    animationOutTiming={600}
+                    backdropTransitionInTiming={600}
+                    backdropTransitionOutTiming={600}>
+                    <View style={styles.messageContent}>
+                        <Text style={styles.messageContentTitle}>Type your message</Text>
+                        <View style={{borderWidth:1, borderRadius:5, width:'100%'}}>
+                        <Input
+                            onChange={this._writeMessage}
+                            placeholder='Write your message here'
+                        />
+                        </View>
+                        <Button onPress={this._hideMessage}  title="Send" />
+                        <Button onPress={this._hideMessage}  title="Close" />
+                    </View>
+                </Modal>
                 <Modal
                     hasBackdrop={false}
                     isVisible={this.state.modalVisible}
@@ -410,10 +471,10 @@ export default class DriverTripAccept extends React.Component {
                         <AcceptModal name={name} onPressAccept={this.onPressAccept} />
                     }
                     {this.state.startTrip &&
-                        <ActiveModal name={name} onStart={this.onStart} />
+                        <ActiveModal name={name} showMessage={this._showMessage} openLoc={this.handleGetDirections} onStart={this.onStart} />
                     }
                     {this.state.completeTrip &&
-                        <FinishModal name={name} onComp={this.onComp} />
+                        <FinishModal name={name} openLoc={this.handleGetDirections} onComp={this.onComp} />
                     }
                     
                     { this.state.rateModal &&

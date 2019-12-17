@@ -46,7 +46,7 @@ export default class AcceptModal extends React.Component {
             </View>
             <TouchableOpacity
                 style={styles.button}
-                onPress={() => { debugger; this.props.onPressAccept() }}
+                onPress={() => {  this.props.onPressAccept() }}
             >
                 <Text style={{ color: 'white', marginTop: 10, fontSize: 16, fontWeight: 'bold' }}> Accept Trip</Text>
             </TouchableOpacity>

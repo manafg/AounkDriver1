@@ -43,7 +43,6 @@ export default class RideListPage extends React.Component {
   //Fetching My Rides
   getMyRides(){
     Client.get(`requests/me/requests`).then((res)=>{
-        debugger
         if(res.data=="No requests yet") {
             this.setState({noData : true})
         } else {

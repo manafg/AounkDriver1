@@ -62,7 +62,6 @@ export default class UploadDocs extends React.Component {
     
     
     _updateImage = async (state, val)  => {
-        debugger
         var bodyFormData = new FormData();
         switch (state) {
             case "vehicle_image":

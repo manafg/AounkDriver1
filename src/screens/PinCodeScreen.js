@@ -39,20 +39,17 @@ export default class PinCodeScreen extends Component {
             "phone": this.state.phone,
             "code": parseInt(this.state.pin)
         }).then((res) => {
-            debugger
             console.log(res)
             this.setState({phoneId: res.data.phoneId},()=>{
                 this.registerUser(this.state.phoneId)
             })
             
         }).catch((err) => {
-            debugger
             console.log(err)
         })
     }
 
     registerUser(phoneId) {
-        debugger
         const { navigation } = this.props;
         let fname = navigation.getParam('fname', 'NAME');
         let lname = navigation.getParam('lname', 'NAME');
@@ -66,7 +63,6 @@ export default class PinCodeScreen extends Component {
         console.log('regData',regData)
         Client.defaults.headers['Authorization'] = ""
         Client.post('account/user/create', regData).then((res) => {
-            debugger
             let profile =
             {
                 "firstName": fname,
@@ -76,7 +72,6 @@ export default class PinCodeScreen extends Component {
             console.log(res)
             Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`
             Client.post(`account/user/driver/profile`, profile).then((res) => {
-                debugger
                 console.log(res)
                 // AsyncStorage.setItem('Token', res.data.token);
                 // AsyncStorage.setItem('userID', res.data.userProfile.id)
@@ -85,7 +80,6 @@ export default class PinCodeScreen extends Component {
                 this.props.navigation.navigate('UploadDocs')
             })
         }).catch((res) => {
-            debugger
             console.log(res)
         })
     }
@@ -97,7 +91,6 @@ export default class PinCodeScreen extends Component {
             "userType": "DRIVER"
         })
             .then((res) => {
-                debugger
                 if (res.data) {
                     this.state.phoneId = res.data;
                 } else {

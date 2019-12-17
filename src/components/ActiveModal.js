@@ -44,6 +44,17 @@ export default class ActiveModal extends React.Component {
                     />
                     <Text style={styles.ratingText}>4.8</Text>
                 </View>
+                <TouchableOpacity onPress={()=>{this.props.openLoc()}} style={[styles.subTextSec,{top:60, left:240, flexDirection:'column'}]}>
+                    <Icon
+                        style={{ padding: 0 }}
+                        name='md-map'
+                        type='ionicon'
+                        color={"#72BE44"}
+                        size={35}
+                        containerStyle={{ flex: 0 }}
+                    />
+                    <Text style={[styles.ratingText,{fontSize:12, paddingLeft:15}]}>Navigate</Text>
+                </TouchableOpacity>
                 <TouchableOpacity onPress={()=>{Linking.openURL(`tel:${phone}`)}} style={styles.subTextSec}>
                     <Icon
                         style={{ padding: 5 }}
@@ -53,7 +64,29 @@ export default class ActiveModal extends React.Component {
                         size={30}
                         containerStyle={{ flex: 1 }}
                     />
-                    <Text style={styles.ratingText}>call</Text>
+                    <Text style={styles.ratingText}>Call</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{this.props.showMessage()}} style={[styles.subTextSec,{left:140}]}>
+                    <Icon
+                        style={{ padding: 5 }}
+                        name='ios-chatboxes'
+                        type='ionicon'
+                        color={"#72BE44"}
+                        size={30}
+                        containerStyle={{ flex: 1 }}
+                    />
+                    <Text style={styles.ratingText}>Chat</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={()=>{Linking.openURL(`tel:${phone}`)}} style={[styles.subTextSec,{left:250}]}>
+                    <Icon
+                        style={{ padding: 5 }}
+                        name='md-close'
+                        type='ionicon'
+                        color={"#72BE44"}
+                        size={30}
+                        containerStyle={{ flex: 1 }}
+                    />
+                    <Text style={styles.ratingText}>Cancel</Text>
                 </TouchableOpacity>
             </View>
             <TouchableOpacity
@@ -77,7 +110,7 @@ const styles = StyleSheet.create({
         width: '80%',
         padding: 10,
         height: 60,
-        marginTop: 150,
+        marginTop: 190,
         alignItems: 'center',
         marginLeft: 40,
         marginRight: 40,
@@ -102,11 +135,11 @@ const styles = StyleSheet.create({
         height: 80
     },
     scrollableModal: {
-        height: 250,
+        height: 300,
     },
     scrollableModalContent1: {
         paddingBottom: 50,
-        height: 250,
+        height: 300,
         backgroundColor: 'rgba(200, 200, 200,  0.7)',
     },
     contentWraper: {
@@ -133,8 +166,8 @@ const styles = StyleSheet.create({
     },
     subTextSec: {
         position: 'absolute',
-        top: 90,
-        left: 120,
+        top: 130,
+        left: 50,
         width: 80,
         flex: 1,
         flexDirection:'row'
@@ -145,6 +178,6 @@ const styles = StyleSheet.create({
     },
     ratingText: {
         color: "#808080",
-        fontSize: 24
+        fontSize: 20,
     },
 });

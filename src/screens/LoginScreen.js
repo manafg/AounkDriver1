@@ -56,7 +56,6 @@ export default class LoginScreen extends Component {
           "password":"hash-this"
       }
       Client.post('account/users/login', logData).then((res)=>{
-        debugger
          AsyncStorage.setItem('Token', res.data.token);
          AsyncStorage.setItem('userID',res.data.userProfile.id)
         Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`;
@@ -75,6 +74,7 @@ export default class LoginScreen extends Component {
        
         
       }).catch((res)=>{
+        console.log('res',res)
       })
     }
    
