@@ -10,8 +10,10 @@ import ForgotPassModal from './ForgotPassModal';
 import ChangePasswordModal from './ChangePasswordModal';
 import EditUser from './EditUser';
 import RateModal from './RateModal';
+import Declined from './Declined'
 
 export {
+    Declined,
     RateModal,
     Background,
     Button,

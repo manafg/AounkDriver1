@@ -50,6 +50,12 @@ export default class AcceptModal extends React.Component {
             >
                 <Text style={{ color: 'white', marginTop: 10, fontSize: 16, fontWeight: 'bold' }}> Accept Trip</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+                style={[styles.button,{marginTop:20, backgroundColor:'#70B32F'}]}
+                onPress={this.props.reject}
+            >
+                <Text style={{ color: 'white', marginTop: 10, fontSize: 16, fontWeight: 'bold' }}>Reject Trip</Text>
+            </TouchableOpacity>
 
         </View>
 
@@ -90,11 +96,11 @@ const styles = StyleSheet.create({
         height: 80
     },
     scrollableModal: {
-        height: 250,
+        height: 350,
     },
     scrollableModalContent1: {
         paddingBottom: 50,
-        height: 250,
+        height: 350,
         backgroundColor: 'rgba(200, 200, 200,  0.7)',
     },
     contentWraper: {

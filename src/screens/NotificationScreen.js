@@ -10,7 +10,7 @@ import {
     Image
 } from 'react-native';
 import SwitchSelector from "react-native-switch-selector";
-
+import { withNavigation, DrawerActions } from 'react-navigation'
 import { Header, Icon } from 'react-native-elements';
 import { colors } from '../common/theme';
 
