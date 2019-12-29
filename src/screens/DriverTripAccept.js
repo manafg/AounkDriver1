@@ -40,7 +40,9 @@ export default class DriverTripAccept extends React.Component {
     constructor(props) {
         super(props);
         this.socket = io(SOCKET_URL, {
-            path: '/socket.io'
+            path: '/socket.io',
+            pingTimeout: 6000000,
+            pingInterval: 30000
         });
         this.state = {
             recivedNewReq: null,
@@ -51,19 +53,19 @@ export default class DriverTripAccept extends React.Component {
                 longitudeDelta: 0.9421,
             },
             newReq: false,
-            messageShow:false,
+            messageShow: false,
             fareScreen: false,
             startTrip: false,
-            Declined:false,
+            Declined: false,
             completeTrip: false,
             online: null,
-            receipt:null,
+            receipt: null,
             starCount: 5,
             modalVisible: false,
             fareScreen: false,
             loaderVisible: false,
             alertModalVisible: false,
-            rateModal:false,
+            rateModal: false,
             coords: [],
             views: false,
             radio_props: [
@@ -86,7 +88,7 @@ export default class DriverTripAccept extends React.Component {
         this.onStart = this.onStart.bind(this);
         this.onComp = this.onComp.bind(this);
         this._rate = this._rate.bind(this);
-        this.handleGetDirections= this.handleGetDirections.bind(this);
+        this.handleGetDirections = this.handleGetDirections.bind(this);
         this._showMessage = this._showMessage.bind(this);
         this._hideMessage = this._hideMessage.bind(this);
     }
@@ -106,63 +108,63 @@ export default class DriverTripAccept extends React.Component {
         }
     }
 
-    _rejectTrip(){
-        Client.patch(`requests/truck/${this.state.recivedNewReq.data.requestId}/reject`).then((res)=>{
+    _rejectTrip() {
+        Client.patch(`requests/truck/${this.state.recivedNewReq.data.requestId}/reject`).then((res) => {
             this.cancelRequest()
         })
     }
 
-   
 
-   
 
-    _hideMessage(){
-        this.setState({messageShow:false})
+
+
+    _hideMessage() {
+        this.setState({ messageShow: false })
     }
 
-    _showMessage(){
-        this.setState({messageShow:true})
+    _showMessage() {
+        this.setState({ messageShow: true })
     }
-    
-    _writeMessage(val){
-        this.setState({message:val})
+
+    _writeMessage(val) {
+        this.setState({ message: val })
     }
 
     handleGetDirections = (source, destination) => {
         const data = {
-           source: {
-            latitude: this.state.recivedNewReq.data.passenger_location.lat,
-            longitude: this.state.recivedNewReq.data.passenger_location.lng
-          },
-          destination: {
-            latitude: this.state.recivedNewReq.data.passenger_destination.lat,
-            longitude: this.state.recivedNewReq.data.passenger_destination.lng 
-          },
-          params: [
-            {
-              key: "travelmode",
-              value: "driving"        // may be "walking", "bicycling" or "transit" as well
+            source: {
+                latitude: this.state.recivedNewReq.data.passenger_location.lat,
+                longitude: this.state.recivedNewReq.data.passenger_location.lng
             },
-            {
-              key: "dir_action",
-              value: "navigate"       // this instantly initializes navigation using the given travel mode
-            }
-          ]
+            destination: {
+                latitude: this.state.recivedNewReq.data.passenger_destination.lat,
+                longitude: this.state.recivedNewReq.data.passenger_destination.lng
+            },
+            params: [
+                {
+                    key: "travelmode",
+                    value: "driving"        // may be "walking", "bicycling" or "transit" as well
+                },
+                {
+                    key: "dir_action",
+                    value: "navigate"       // this instantly initializes navigation using the given travel mode
+                }
+            ]
         }
-     
+
         getDirections(data)
     }
 
-    
+
     listen() {
         this.socket.on('show_notification', (val) => {
 
-                if (val.data.driver_location) {
-                    val.data.my_location = val.data.driver_location;
-                }
-                let isDecline = val.data.request_status == "DECLINED" ? true:false;
-                this.setState({ recivedNewReq: !isDecline ? val :null, modalVisible: !isDecline , Declined:isDecline, newReq: true, completeTrip: false, startTrip: false,rateModal:false, fareScreen: false })
-                this.getDirections()
+            if (val.data.driver_location) {
+                val.data.my_location = val.data.driver_location;
+            }
+            let isDecline = val.data.request_status == "DECLINED" ? true : false;
+            this.setState({ recivedNewReq: !isDecline ? val : null, modalVisible: !isDecline, Declined: isDecline, newReq: true, completeTrip: false, startTrip: false, rateModal: false, fareScreen: false })
+            this.getDirections()
         });
     }
     componentWillUnmount() {
@@ -189,14 +191,14 @@ export default class DriverTripAccept extends React.Component {
             res.data.my_location.lng = res.data.driver_location.lng
             if (res.data.request_status == "DECLINED") { }
             if (res.data.request_status == "ACTIVE") {
-                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: true, rateModal:false,fareScreen: false })
+                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: true, rateModal: false, fareScreen: false })
             }
             if (res.data.request_status == "STARTED") {
-                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: true, startTrip: false,rateModal:false, fareScreen: false })
+                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: true, startTrip: false, rateModal: false, fareScreen: false })
             }
             if (res.data.request_status == "COMPLETED") {
                 debugger
-                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: false,rateModal:false, fareScreen: true })
+                this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: false, rateModal: false, fareScreen: true })
             }
         }).catch((res) => {
 
@@ -219,7 +221,7 @@ export default class DriverTripAccept extends React.Component {
 
     }
     cancelRequest() {
-        this.setState({ recivedNewReq: null, modalVisible: false, newReq: false, completeTrip: false, startTrip: false, rateModal:false,fareScreen: false })
+        this.setState({ recivedNewReq: null, modalVisible: false, newReq: false, completeTrip: false, startTrip: false, rateModal: false, fareScreen: false })
     }
 
     onStart() {
@@ -231,8 +233,8 @@ export default class DriverTripAccept extends React.Component {
         }).catch((res) => {
         })
     }
-    _rate(){
-        this.setState({modalVisible:false, fareScreen:true})
+    _rate() {
+        this.setState({ modalVisible: false, fareScreen: true })
     }
     onComp() {
         Client.patch(`requests/truck/${this.state.recivedNewReq.data.requestId}/complete`).then((res) => {
@@ -342,7 +344,7 @@ export default class DriverTripAccept extends React.Component {
         }
         this.setState({ loaderVisible: true })
         Client.patch(`/requests/truck/${this.state.recivedNewReq.data.requestId}/accept`, obj).then((res) => {
-            this.setState({ modalVisible: false, loaderVisible: false, startTrip: true,rateModal:false, completeTrip: false, newReq: false })
+            this.setState({ modalVisible: false, loaderVisible: false, startTrip: true, rateModal: false, completeTrip: false, newReq: false })
             setTimeout(() => {
                 this.setState({ modalVisible: true })
             }, 1000)
@@ -357,8 +359,8 @@ export default class DriverTripAccept extends React.Component {
 
 
     render() {
-        let status= this.state.online == "on"? "Online" : "Offline";
-        let color = this.state.online == "on"? '#72BE44' : "#949494";
+        let status = this.state.online == "on" ? "Online" : "Offline";
+        let color = this.state.online == "on" ? '#72BE44' : "#949494";
         let name = this.state.recivedNewReq ? this.state.recivedNewReq.data.profile.name : "Manaf Hgh";
         let currentLat = this.state.recivedNewReq ? this.state.recivedNewReq.data.passenger_location.lat : 31.9265336;
         let currentLng = this.state.recivedNewReq ? this.state.recivedNewReq.data.passenger_location.lng : 35.9589416;
@@ -395,7 +397,7 @@ export default class DriverTripAccept extends React.Component {
                     outerContainerStyles={styles.headerStyle}
                     innerContainerStyles={styles.headerInnerStyle}
                 />
-                
+
                 <View style={{ width: '100%', textAlign: 'center', justifyContent: 'center', backgroundColor: color, height: 25 }}>
                     <Text style={{ color: '#FFFFFF', textAlign: 'center' }}>You are {status} </Text>
                 </View>
@@ -437,15 +439,15 @@ export default class DriverTripAccept extends React.Component {
                     animationOut="slideOutRight">
                     <PricingCard
                         color="#70B32F"
-                        onButtonPress={()=>{this.cancelRequest()}}
+                        onButtonPress={() => { this.cancelRequest() }}
                         title="Total"
-                        price={this.state.receipt? this.state.receipt.total : null}
+                        price={this.state.receipt ? this.state.receipt.total : null}
                         info={[name, `Time : ${this.state.receipt ? this.state.receipt.trip_fare_time : null}`, 'City: Amman']}
                         button={{ title: 'Finish', }}
                     />
                 </Modal>
-                {this.state.Declined && 
-                    <Declined Declined = {this.state.Declined} cancelRequest={this.cancelRequest.bind(this)} />
+                {this.state.Declined &&
+                    <Declined Declined={this.state.Declined} cancelRequest={this.cancelRequest.bind(this)} />
                 }
                 <Modal
                     testID={'modal'}
@@ -460,14 +462,20 @@ export default class DriverTripAccept extends React.Component {
                     backdropTransitionOutTiming={600}>
                     <View style={styles.messageContent}>
                         <Text style={styles.messageContentTitle}>Type your message</Text>
-                        <View style={{borderWidth:1, borderRadius:5, width:'100%'}}>
-                        <Input
-                            onChange={this._writeMessage}
-                            placeholder='Write your message here'
-                        />
+                        <View style={{ borderWidth: 1, borderRadius: 5, width: '100%' }}>
+                            <Input
+                                onChange={this._writeMessage}
+                                placeholder='Write your message here'
+                            />
                         </View>
-                        <Button onPress={this._hideMessage}  title="Send" />
-                        <Button onPress={this._hideMessage}  title="Close" />
+                        <TouchableOpacity style={styles.buttonGrid}>
+
+                            <Text style={styles.ratingText}>Send</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => { this._hideMessage() }} style={[styles.buttonGrid, { marginTop: 0, marginBottom: 0 }]}>
+
+                            <Text style={styles.ratingText}>Cancel</Text>
+                        </TouchableOpacity>
                     </View>
                 </Modal>
                 <Modal
@@ -489,7 +497,7 @@ export default class DriverTripAccept extends React.Component {
                     {this.state.completeTrip &&
                         <FinishModal name={name} openLoc={this.handleGetDirections} onComp={this.onComp} />
                     }
-                    { this.state.rateModal &&
+                    {this.state.rateModal &&
                         <RateModal _rate={this._rate} />
                     }
                 </Modal>
@@ -539,6 +547,24 @@ const styles = StyleSheet.create({
         fontFamily: 'Roboto-Bold',
         fontSize: 20
     },
+    buttonGrid: {
+        borderRadius: 10,
+        width: '50%',
+        padding: 10,
+        height: 40,
+        marginBottom: 10,
+        marginTop: 10,
+        alignItems: 'center',
+        marginLeft: 40,
+        marginRight: 40,
+        backgroundColor: '#0D1C60',
+    },
+    ratingText: {
+        color: "white",
+        fontSize: 14,
+        textAlign: 'center',
+        justifyContent: 'center'
+    },
     mapcontainer: {
         flex: 6,
         width: width,
@@ -565,6 +591,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         padding: 20
+    },
+    messageContent: {
+        backgroundColor: 'white',
+        padding: 22,
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 7,
+        borderColor: 'rgba(0, 0, 0, 0.1)',
+    },
+    messageContentTitle: {
+        fontSize: 20,
+        marginBottom: 12,
     },
     bottomModal: {
         justifyContent: 'flex-end',
