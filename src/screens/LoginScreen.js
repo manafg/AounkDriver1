@@ -56,8 +56,9 @@ export default class LoginScreen extends Component {
           "password":"hash-this"
       }
       Client.post('account/users/login', logData).then((res)=>{
+        
          AsyncStorage.setItem('Token', res.data.token);
-         AsyncStorage.setItem('userID',res.data.userProfile.id)
+         AsyncStorage.setItem('userID',res.data.user.userId)
         Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`;
         let loc={
           "location":{

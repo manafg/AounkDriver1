@@ -11,6 +11,7 @@ import axios from 'axios';
 
 
 var { height } = Dimensions.get('window');
+let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMmRkODMxZDg2ODBlNTgzYjE2NmI2OSIsIm5hbWUiOiJNIiwiZW1haWwiOiJNQG0uY29tIiwiaWF0IjoxNTgwMDYyNzY5LCJleHAiOjE1ODAxNDkxNjl9.TDZ3WX3-u7X4H0mSbOPKC1MuRrHgB3smdL25MT31BOY"
 
 export default class UploadDocs extends React.Component {
 
@@ -63,125 +64,153 @@ export default class UploadDocs extends React.Component {
     
     _updateImage = async (state, val)  => {
         var bodyFormData = new FormData();
+        let self2 = this
         switch (state) {
             case "vehicle_image":
-                    try {
-                        bodyFormData.append(`${vehicle_image}`, val.uri); 
+                        bodyFormData.append("photo", {
+                            width:val.width,
+                            height:height,
+                            uri: val.uri,
+                            type: "image/jpeg",
+                            name: `vehicle_image.jpg`,
+                          });
                         axios({
                             method: 'post',
-                            url: `http://api.ibshr.com/api/account/upload-documents/vehicle_image`,
+                            url: `http://api.ibshr.com/api/account/upload/documents/vehicle_image`,
                             data: bodyFormData,
                             headers: {
-                            'Content-Type': 'multipart/form-data' ,
+                            'Content-Type': 'multipart/form-data',
                             Authorization: `Bearer ${token}`}
                             })
                             .then(function (response) {
-                                this.setState({ vehicle_image: val })
+                                self2.setState({ vehicle_image: val })
                             })
                             .catch(function (response) {
                                 //handle error
                                 console.log(response);
                             });
-                      } catch (error) {
                       
-                      }
                 break;
             case "vCategory":
-                this.setState({ vCategory: val },()=>{
-                    try {
-                        this.UploadDocs('vCategory',val)
-                      } catch (error) {
-                      
-                      }
-                })
+                    bodyFormData.append("photo", {
+                        width:val.width,
+                        height:height,
+                        uri: val.uri,
+                        type: "image/jpeg",
+                        name: `vCategory.jpg`,
+                      });
+                      axios({
+                        method: 'post',
+                        url: `http://api.ibshr.com/api/account/upload/documents/vehicle_category_image`,
+                        data: bodyFormData,
+                        headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`}
+                        })
+                        .then(function (response) {
+                            self2.setState({ vCategory: val })
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
                 break;
             case "driver_license":
-                    try {
-                        bodyFormData.append(`${driver_license}`, val.uri); 
-                        axios({
-                            method: 'post',
-                            url: `http://api.ibshr.com/api/account/upload-documents/driver_license`,
-                            data: bodyFormData,
-                            headers: {
-                            'Content-Type': 'multipart/form-data' ,
-                            Authorization: `Bearer ${token}`}
-                            })
-                            .then(function (response) {
-                                this.setState({ driver_license: val })
-                            })
-                            .catch(function (response) {
-                                //handle error
-                                console.log(response);
-                            });
-                      } catch (error) {
-                      
-                      }
+                    bodyFormData.append("photo", {
+                        width:val.width,
+                        height:height,
+                        uri: val.uri,
+                        type: "image/jpeg",
+                        name: `driver_license.jpg`,
+                      });
+                      axios({
+                        method: 'post',
+                        url: `http://api.ibshr.com/api/account/upload/documents/driver_license`,
+                        data: bodyFormData,
+                        headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`}
+                        })
+                        .then(function (response) {
+                            
+                            self2.setState({ driver_license: val })
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
                 break;
             case "personal_id":
-                        try {
-                            bodyFormData.append(`${personal_id}`, val.uri); 
-                            axios({
-                                method: 'post',
-                                url: `http://api.ibshr.com/api/account/upload-documents/personal_id`,
-                                data: bodyFormData,
-                                headers: {
-                                'Content-Type': 'multipart/form-data' ,
-                                Authorization: `Bearer ${token}`}
-                                })
-                                .then(function (response) {
-                                    this.setState({ personal_id: val })
-                                })
-                                .catch(function (response) {
-                                    //handle error
-                                    console.log(response);
-                                });
-                          } catch (error) {
-                          
-                          }
+                    bodyFormData.append("photo", {
+                        width:val.width,
+                        height:height,
+                        uri: val.uri,
+                        type: "image/jpeg",
+                        name: `personal_id.jpg`,
+                      });
+                      axios({
+                        method: 'post',
+                        url: `http://api.ibshr.com/api/account/upload/documents/personal_id`,
+                        data: bodyFormData,
+                        headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`}
+                        })
+                        .then(function (response) {
+                            self2.setState({ personal_id: val })
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
                 break;
             case "vehicle_plate_number":
-                        try {
-                            bodyFormData.append(`${vehicle_plate_number}`, val.uri); 
-                            axios({
-                                method: 'post',
-                                url: `http://api.ibshr.com/api/account/upload-documents/vehicle_plate_number`,
-                                data: bodyFormData,
-                                headers: {
-                                'Content-Type': 'multipart/form-data' ,
-                                Authorization: `Bearer ${token}`}
-                                })
-                                .then(function (response) {
-                                    this.setState({ vehicle_plate_number: val })
-                                })
-                                .catch(function (response) {
-                                    //handle error
-                                    console.log(response);
-                                });
-                          } catch (error) {
-                          
-                          }
+                    bodyFormData.append("photo", {
+                        width:val.width,
+                        height:height,
+                        uri: val.uri,
+                        type: "image/jpeg",
+                        name: `vehicle_plate_number.jpg`,
+                      });
+                      axios({
+                        method: 'post',
+                        url: `http://api.ibshr.com/api/account/upload/documents/vehicle_plate_number`,
+                        data: bodyFormData,
+                        headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`}
+                        })
+                        .then(function (response) {
+                            self2.setState({ vehicle_plate_number: val })
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
                 break;
             case "ncrc":
-                        try {
-                            bodyFormData.append(`${ncrc}`, val.uri); 
-                            axios({
-                                method: 'post',
-                                url: `http://api.ibshr.com/api/account/upload-documents/ncrc`,
-                                data: bodyFormData,
-                                headers: {
-                                'Content-Type': 'multipart/form-data' ,
-                                Authorization: `Bearer ${token}`}
-                                })
-                                .then(function (response) {
-                                    this.setState({ ncrc: val })
-                                })
-                                .catch(function (response) {
-                                    //handle error
-                                    console.log(response);
-                                });
-                          } catch (error) {
-                          
-                          }
+                    bodyFormData.append("photo", {
+                        width:val.width,
+                        height:height,
+                        uri: val.uri,
+                        type: "image/jpeg",
+                        name: `ncrc.jpg`,
+                      });
+                      axios({
+                        method: 'post',
+                        url: `http://api.ibshr.com/api/account/upload/documents/ncrc`,
+                        data: bodyFormData,
+                        headers: {
+                        'Content-Type': 'multipart/form-data',
+                        Authorization: `Bearer ${token}`}
+                        })
+                        .then(function (response) {
+                            self2.setState({ ncrc: val })
+                        })
+                        .catch(function (response) {
+                            //handle error
+                            console.log(response);
+                        });
                 break;
             default:
         }
@@ -244,7 +273,7 @@ export default class UploadDocs extends React.Component {
                             }
                         </View>
                         <View style={styles.image}>
-                            {!this.state.vImage ?
+                            {!this.state.vehicle_image ?
                                 <View style={{ flex: 1 }}>
                                     <Icon
                                         style={{ padding: 5, marginTop: 20 }}
@@ -260,7 +289,7 @@ export default class UploadDocs extends React.Component {
                             }
                         </View>
                         <View style={styles.image}>
-                            {!this.state.vPlateNumber ?
+                            {!this.state.vehicle_plate_number ?
                                 <View style={{ flex: 1 }}>
                                     <Icon
                                         style={{ padding: 5, marginTop: 20 }}
@@ -279,7 +308,7 @@ export default class UploadDocs extends React.Component {
                     </View>
                     <View style={[styles.comp, { marginTop: 10 }]}>
                         <View style={styles.image}>
-                            {!this.state.driverLicense ?
+                            {!this.state.driver_license ?
                                 <View style={{ flex: 1 }}>
                                     <Icon
                                         style={{ padding: 5, marginTop: 20 }}
@@ -295,7 +324,7 @@ export default class UploadDocs extends React.Component {
                             }
                         </View>
                         <View style={styles.image}>
-                            {!this.state.personalID ?
+                            {!this.state.personal_id ?
                                 <View style={{ flex: 1 }}>
                                     <Icon
                                         style={{ padding: 5, marginTop: 20 }}
@@ -312,7 +341,7 @@ export default class UploadDocs extends React.Component {
 
                         </View>
                         <View style={styles.image}>
-                            {!this.state.noCreminal ?
+                            {!this.state.ncrc ?
                                 <View style={{ flex: 1 }}>
                                     <Icon
                                         style={{ padding: 5, marginTop: 20 }}

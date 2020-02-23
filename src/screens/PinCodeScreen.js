@@ -61,7 +61,7 @@ export default class PinCodeScreen extends Component {
             phoneId: phoneId
         }
         console.log('regData',regData)
-        Client.defaults.headers['Authorization'] = ""
+        Client.defaults.headers['Authorization'] = "";
         Client.post('account/user/create', regData).then((res) => {
             let profile =
             {
@@ -114,7 +114,7 @@ export default class PinCodeScreen extends Component {
                     <Text style={styles.subText}>Phone Verify</Text>
                     <Text style={{ color: "#0D1C60", marginTop: 20, fontSize: 16, width: '50%', textAlign: 'center' }}>We sent code to verify your phone</Text>
 
-                    <Text style={{ color: '#7F7F7F', marginTop: 20 }}> Sent to (+962) {this.state.phone}</Text>
+                    <Text style={{ color: '#7F7F7F', marginTop: 20 }}> Sent to {this.state.phone}</Text>
 
                 </View>
                 <View style={styles.containerView}>

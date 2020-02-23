@@ -197,7 +197,6 @@ export default class DriverTripAccept extends React.Component {
                 this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: true, startTrip: false, rateModal: false, fareScreen: false })
             }
             if (res.data.request_status == "COMPLETED") {
-                debugger
                 this.setState({ recivedNewReq: res, modalVisible: true, newReq: false, completeTrip: false, startTrip: false, rateModal: false, fareScreen: true })
             }
         }).catch((res) => {

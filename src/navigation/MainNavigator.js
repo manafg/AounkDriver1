@@ -11,6 +11,8 @@ import {
     PinCodeScreen,
     PhoneLand,
     RegistrationPage,
+    OfferPage,
+    OffersDetail,
     UploadDocs,
 } from '../screens';
 import SideMenu from '../components/SideMenu';
@@ -19,6 +21,18 @@ var { width, height } = Dimensions.get('window');
 
 //app stack for user end
     export const AppStack = {
+        OffersDetail:{
+            screen:OffersDetail,
+            navigationOptions:{
+                header: null
+            }
+        },
+        OfferPage:{
+            screen:OfferPage,
+            navigationOptions:{
+                header:null
+            }
+        },
         UploadDocs:{
             screen: UploadDocs,
             navigationOptions:{
@@ -76,6 +90,12 @@ var { width, height } = Dimensions.get('window');
 
     //authentication stack for user before login
     export const AuthStack = createStackNavigator({
+        OffersDetail:{
+            screen:OffersDetail,
+            navigationOptions:{
+                header:null
+            }
+        },
         Notifications:{
             screen:NotificationPage,
             navigationOptions:{
@@ -117,6 +137,10 @@ var { width, height } = Dimensions.get('window');
     });
 
     const DrawerRoutes = {
+        'OfferPage':{
+            name:'OfferPage',
+            screen: createStackNavigator(AppStack, { initialRouteName: 'OfferPage',headerMode: 'none' })
+        },
         'RideList': {
             name: 'RideList',
             screen: createStackNavigator(AppStack, { initialRouteName: 'RideList',headerMode: 'none' })

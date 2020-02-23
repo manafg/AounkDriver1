@@ -22,6 +22,7 @@ export default class SideMenu extends React.Component{
                 {key: 2, name: 'Profile Settings', navigationName: 'Profile', icon: 'ios-person-add', type: 'ionicon', child: 'secondChild'},
                 {key: 3, name: 'My Bookings', navigationName: 'RideList', icon: 'car-sports', type: 'material-community', child: 'thirdChild'},
                 {key: 4, name: 'Notifications', navigationName: 'Notifications', icon: 'bell', type: 'material-community', child: 'fourthChild'},
+                {key: 5, name: 'Offers', navigationName: 'OfferPage', icon: 'price-tag', type: 'entypo', child: 'thirdChild'},
                 {key: 9, name: 'About Us', navigationName: 'About', icon: 'info', type: 'entypo', child: 'ninethChild'},
                 {key: 10, name: 'Sign Out', icon: 'sign-out', type: 'font-awesome', child: 'lastChild'}
             ],

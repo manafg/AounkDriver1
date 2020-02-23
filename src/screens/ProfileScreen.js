@@ -41,20 +41,20 @@ export default class ProfileScreen extends React.Component {
   }
 
   async componentWillMount() {
-    var curuser = firebase.auth().currentUser;
-    this.setState({currentUser:curuser},()=>{
-        const userData=firebase.database().ref('users/'+this.state.currentUser.uid);
-        userData.on('value',userData=>{
-            if(userData.val()){
-                var str = userData.val().location.add
-                var tempAdd = str.split(",")[0] + ","+str.split(",")[1] + ','+str.split(",")[3]+ ','+str.split(",")[4];
-                this.setState({tempAddress:tempAdd});
-                this.setState(userData.val(),(res)=>{
-                });
-            }
+    // var curuser = firebase.auth().currentUser;
+    // this.setState({currentUser:curuser},()=>{
+    //     const userData=firebase.database().ref('users/'+this.state.currentUser.uid);
+    //     userData.on('value',userData=>{
+    //         if(userData.val()){
+    //             var str = userData.val().location.add
+    //             var tempAdd = str.split(",")[0] + ","+str.split(",")[1] + ','+str.split(",")[3]+ ','+str.split(",")[4];
+    //             this.setState({tempAddress:tempAdd});
+    //             this.setState(userData.val(),(res)=>{
+    //             });
+    //         }
             
-        })
-    })
+    //     })
+    // })
     
   }
  

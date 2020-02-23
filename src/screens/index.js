@@ -11,11 +11,15 @@ import PhoneLand from './PhoneLand';
 import PinCodeScreen from './PinCodeScreen';
 import RegistrationPage from './Registration';
 import UploadDocs from './UploadDocs';
+import OfferPage from './OffersPage';
+import OffersDetail from './offersDetail';
 
 
 export {
+    OffersDetail,
     PinCodeScreen,
     UploadDocs,
+    OfferPage,
     PhoneLand,
     RegistrationPage,
     RideListPage,
