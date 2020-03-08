@@ -19,6 +19,7 @@ export default class OffersDetail extends Component {
             latitudeDelta: 0.9922,
             longitudeDelta: 0.9421,
         }
+        this.submitOffer=this.submitOffer.bind(this)
     }
 
     componentDidMount() {
@@ -33,6 +34,19 @@ export default class OffersDetail extends Component {
         }).catch((res) => {
         })
     }
+
+    submitOffer() {
+        const { requestId } = this.props.navigation.state.params;
+        let obj = {
+            price:"100"
+        }
+        Clint.post(`requests/move-furniture/${requestId}/offers`,obj).then((res)=>{
+            this.props.navigation.goBack()
+        }).catch((res)=>{
+            debugger
+        })
+    }
+
     render() {
         return (
             <View style={styles.container}>
@@ -191,7 +205,7 @@ export default class OffersDetail extends Component {
                 />
                 <Button
                 style={{marginRight:20, marginLeft:20, marginTop:10}}
-                    
+                    onPress={this.submitOffer}
                     // icon={
                     //     // <Icon
                     //     //     name='check'
