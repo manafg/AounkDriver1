@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Text, View, StyleSheet } from "react-native";
 import CollapsibleList from "react-native-collapsible-list";
-import { Icon, Input, Button } from 'react-native-elements';
+import { Icon, Input, Button, ListItem } from 'react-native-elements';
 import Clint from '../API/Client';
 import MapComponent from '../components/MapComponent'
 
@@ -54,27 +54,29 @@ export default class OffersDetail extends Component {
                     numberOfVisibleItems={1}
                     wrapperStyle={styles.wrapperCollapsibleList}
                     buttonContent={
-                        <View style={styles.button}>
-                            <Icon
-                                style={{ padding: 0 }}
-                                name='timetable'
-                                type='material-community'
-                                color={"#000"}
-                                size={35}
-                                containerStyle={{ flex: 1, marginTop: 10 }}
-                            />
-                            <Text style={styles.buttonText}>Date & Time</Text>
-                            <Icon
-                                name='caret-down'
+                        <ListItem
+                            style={{ borderBottomWidth: .5, borderColor: '#B0B0B0' }}
+                            leftIcon={<Icon
+                                style={{ padding: 0 , flex:1}}
+                                name='map-marker'
                                 type='font-awesome'
-                                color={"#000"}
+                                color={"#70B32F"}
                                 size={35}
-                                containerStyle={{ flex: 1, marginLeft: 100 }}
-                            />
-                        </View>
+                            />}
+                            rightIcon={<Icon
+                                style={{ padding: 0 }}
+                                name='ios-arrow-down'
+                                type='ionicon'
+                                color={"#909090"}
+                                size={35}
+                            />}
+                            titleStyle={{  color:'#0D1C60',fontSize: 20, fontWeight:'bold' }}
+                            title={'Detail'}
+                            subtitle={'Date and Time of the drop off'}
+                        />
                     }
                 >
-                     <View style={styles.collapsibleItem}>
+                    <View style={styles.collapsibleItem}>
                         <Text></Text>
                     </View>
                     <View style={styles.collapsibleItem}>
@@ -91,24 +93,26 @@ export default class OffersDetail extends Component {
                     numberOfVisibleItems={1}
                     wrapperStyle={styles.wrapperCollapsibleList}
                     buttonContent={
-                        <View style={styles.button}>
-                            <Icon
+                        <ListItem
+                            style={{ borderBottomWidth: .5, borderColor: '#B0B0B0' }}
+                            leftIcon={<Icon
+                                style={{ padding: 0, flex:1 }}
+                                name='list-alt'
+                                type='font-awesome'
+                                color={"#70B32F"}
+                                size={30}
+                            />}
+                            rightIcon={<Icon
                                 style={{ padding: 0 }}
-                                name='map-marker'
-                                type='font-awesome'
-                                color={"#000"}
+                                name='ios-arrow-down'
+                                type='ionicon'
+                                color={"#909090"}
                                 size={35}
-                                containerStyle={{ flex: 1, marginTop: 10 }}
-                            />
-                            <Text style={styles.buttonText}>Location</Text>
-                            <Icon
-                                name='caret-down'
-                                type='font-awesome'
-                                color={"#000"}
-                                size={35}
-                                containerStyle={{ flex: 1, marginLeft: 140 }}
-                            />
-                        </View>
+                            />}
+                            titleStyle={{  color:'#0D1C60',fontSize: 20, fontWeight:'bold' }}
+                            title={'Location'}
+                            subtitle={'Location of the drop off'}
+                        />
                     }
                 >
                     <View style={{ height: 30 }}>
@@ -116,31 +120,33 @@ export default class OffersDetail extends Component {
                         <Text style={{ fontSize: 20, marginLeft: 15, marginTop: 10 }}>To: Al Rabieh</Text>
                     </View>
                     <View style={styles.collapsibleItem1}>
-                        <MapComponent mapRegion={this.region} mapStyle={styles.map} />
+                        <OfferDetailMap mapRegion={this.region} markerCord={{ lat: this.region.latitude, long: this.region.longitude }} mapStyle={styles.map} />
                     </View>
                 </CollapsibleList>
                 <CollapsibleList
                     numberOfVisibleItems={1}
                     wrapperStyle={styles.wrapperCollapsibleList}
                     buttonContent={
-                        <View style={styles.button}>
-                            <Icon
+                        <ListItem
+                            style={{ borderBottomWidth: .5, borderColor: '#B0B0B0' }}
+                            leftIcon={<Icon
                                 style={{ padding: 0 }}
                                 name='home'
                                 type='font-awesome'
-                                color={"#000"}
+                                color={"#70B32F"}
                                 size={35}
-                                containerStyle={{ flex: 1, marginTop: 10 }}
-                            />
-                            <Text style={styles.buttonText}>House Info</Text>
-                            <Icon
-                                name='caret-down'
-                                type='font-awesome'
-                                color={"#000"}
+                            />}
+                            rightIcon={<Icon
+                                style={{ padding: 0 }}
+                                name='ios-arrow-down'
+                                type='ionicon'
+                                color={"#909090"}
                                 size={35}
-                                containerStyle={{ flex: 1, marginLeft: 140 }}
-                            />
-                        </View>
+                            />}
+                            titleStyle={{  color:'#0D1C60',fontSize: 20, fontWeight:'bold' }}
+                            title={'Services'}
+                            subtitle={'Services That you Requested'}
+                        />
                     }
                 >
                     <View style={styles.collapsibleItem}>
@@ -163,31 +169,33 @@ export default class OffersDetail extends Component {
                     numberOfVisibleItems={1}
                     wrapperStyle={styles.wrapperCollapsibleList}
                     buttonContent={
-                        <View style={styles.button}>
-                            <Icon
+                        <ListItem
+                            style={{ borderBottomWidth: .5, borderColor: '#B0B0B0' }}
+                            leftIcon={<Icon
                                 style={{ padding: 0 }}
-                                name='credit-card'
+                                name='credit-card-alt'
                                 type='font-awesome'
-                                color={"#000"}
+                                color={"#70B32F"}
+                                size={30}
+                            />}
+                            rightIcon={<Icon
+                                style={{ padding: 0 }}
+                                name='ios-arrow-down'
+                                type='ionicon'
+                                color={"#909090"}
                                 size={35}
-                                containerStyle={{ flex: 1, marginTop: 10 }}
-                            />
-                            <Text style={styles.buttonText}>Payment Info</Text>
-                            <Icon
-                                name='caret-down'
-                                type='font-awesome'
-                                color={"#000"}
-                                size={35}
-                                containerStyle={{ flex: 1, marginLeft: 140 }}
-                            />
-                        </View>
+                            />}
+                            titleStyle={{  color:'#0D1C60',fontSize: 20, fontWeight:'bold' }}
+                            title={'Payment'}
+                            subtitle={'Payment method'}
+                        />
                     }
                 >
                     <View style={styles.collapsibleItemC}>
                         <Text></Text>
                     </View>
                     <View style={styles.collapsibleItemC}>
-                        <Text style={{fontSize:20, textAlign:'center'}}>Cash</Text>
+                        <Text style={{ fontSize: 20, textAlign: 'center' }}>Cash</Text>
                     </View>
                 </CollapsibleList>
                 <Input
