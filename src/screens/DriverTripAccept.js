@@ -168,13 +168,13 @@ export default class DriverTripAccept extends React.Component {
         });
     }
     componentWillUnmount() {
-        Client.patch(`account/activity-status/OFFLINE`, {}).then((res) => {
+        Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
             this.setState({ online: "off" })
         })
     }
 
     componentDidMount() {
-        Client.patch(`account/activity-status/OFFLINE`, {}).then((res) => {
+        Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
             this.setState({ online: "off" })
         }).catch((res) => {
         })
@@ -186,7 +186,7 @@ export default class DriverTripAccept extends React.Component {
     }
 
     checkStatus() {
-        Client.get(`account/activity-status`, {}).then((res) => {
+        Client.get(`account/activities/trip`, {}).then((res) => {
             res.data.my_location = res.data.driver_location
             res.data.my_location.lng = res.data.driver_location.lng
             if (res.data.request_status == "DECLINED") { }
@@ -206,14 +206,13 @@ export default class DriverTripAccept extends React.Component {
     }
 
     setOnline(val) {
-
         if (val == "on") {
-            Client.patch(`account/activity-status/ONLINE`, {}).then((res) => {
+            Client.patch(`account/activities/ONLINE`, {}).then((res) => {
                 this.setState({ online: val })
             }).catch((res) => {
             })
         } else {
-            Client.patch(`account/activity-status/OFFLINE`, {}).then((res) => {
+            Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
                 this.setState({ online: val })
             })
         }
