@@ -11,7 +11,6 @@ import axios from 'axios';
 
 
 var { height } = Dimensions.get('window');
-let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVlMmRkODMxZDg2ODBlNTgzYjE2NmI2OSIsIm5hbWUiOiJNIiwiZW1haWwiOiJNQG0uY29tIiwiaWF0IjoxNTgwMDYyNzY5LCJleHAiOjE1ODAxNDkxNjl9.TDZ3WX3-u7X4H0mSbOPKC1MuRrHgB3smdL25MT31BOY"
 
 export default class UploadDocs extends React.Component {
 
@@ -23,16 +22,31 @@ export default class UploadDocs extends React.Component {
             driver_license: null,
             personal_id: null,
             vehicle_plate_number: null,
-            ncrc: null
+            ncrc: null,
         }
+        this.CounterDocs = 0;
+        debugger
+        this.token =  Client.defaults.headers.Authorization;
         this._pickImage = this._pickImage.bind(this)
     }
 
 
     componentDidMount() {
+        AsyncStorage.setItem('CounterDocs', `${this.CounterDocs}`);
         this.getPermissionAsync();
+        this.getPhotos()
     }
-
+    getPhotos(){
+        Client.get(`account/documents`).then((res)=>{
+            this.setState({
+                vehicle_image:res.data[0]? res.data[0] : null,
+                driver_license:res.data[1]? res.data[1] : null,
+                personal_id:res.data[2]? res.data[2] : null,
+                vehicle_plate_number:res.data[3]? res.data[3] : null,
+                ncrc: res.data[4]? res.data[4] : null,
+            })
+        })
+    }
     getPermissionAsync = async () => {
         if (Constants.platform.ios) {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
@@ -56,13 +70,9 @@ export default class UploadDocs extends React.Component {
         }
     };
 
-    UploadDocs(Category,val){
-       
-
-    }
-    
     
     _updateImage = async (state, val)  => {
+        debugger
         var bodyFormData = new FormData();
         let self2 = this
         switch (state) {
@@ -75,12 +85,12 @@ export default class UploadDocs extends React.Component {
                             name: `vehicle_image.jpg`,
                           });
                         axios({
-                            method: 'post',
+                            method: 'put',
                             url: `http://api.ibshr.com/api/account/upload/documents/vehicle_image`,
                             data: bodyFormData,
                             headers: {
                             'Content-Type': 'multipart/form-data',
-                            Authorization: `Bearer ${token}`}
+                            Authorization: `${this.token}`}
                             })
                             .then(function (response) {
                                 self2.setState({ vehicle_image: val })
@@ -100,18 +110,20 @@ export default class UploadDocs extends React.Component {
                         name: `vCategory.jpg`,
                       });
                       axios({
-                        method: 'post',
+                        method: 'put',
                         url: `http://api.ibshr.com/api/account/upload/documents/vehicle_category_image`,
                         data: bodyFormData,
                         headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`}
+                        Authorization: `${this.token}`}
                         })
                         .then(function (response) {
+                            debugger
                             self2.setState({ vCategory: val })
                         })
                         .catch(function (response) {
                             //handle error
+                            debugger
                             console.log(response);
                         });
                 break;
@@ -124,15 +136,15 @@ export default class UploadDocs extends React.Component {
                         name: `driver_license.jpg`,
                       });
                       axios({
-                        method: 'post',
+                        method: 'put',
                         url: `http://api.ibshr.com/api/account/upload/documents/driver_license`,
                         data: bodyFormData,
                         headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`}
+                        Authorization: `${this.token}`}
                         })
                         .then(function (response) {
-                            
+                            debugger
                             self2.setState({ driver_license: val })
                         })
                         .catch(function (response) {
@@ -149,14 +161,15 @@ export default class UploadDocs extends React.Component {
                         name: `personal_id.jpg`,
                       });
                       axios({
-                        method: 'post',
+                        method: 'put',
                         url: `http://api.ibshr.com/api/account/upload/documents/personal_id`,
                         data: bodyFormData,
                         headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`}
+                        Authorization: `${this.token}`}
                         })
                         .then(function (response) {
+                            debugger
                             self2.setState({ personal_id: val })
                         })
                         .catch(function (response) {
@@ -173,14 +186,15 @@ export default class UploadDocs extends React.Component {
                         name: `vehicle_plate_number.jpg`,
                       });
                       axios({
-                        method: 'post',
+                        method: 'put',
                         url: `http://api.ibshr.com/api/account/upload/documents/vehicle_plate_number`,
                         data: bodyFormData,
                         headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`}
+                        Authorization: `${this.token}`}
                         })
                         .then(function (response) {
+                            debugger
                             self2.setState({ vehicle_plate_number: val })
                         })
                         .catch(function (response) {
@@ -197,18 +211,20 @@ export default class UploadDocs extends React.Component {
                         name: `ncrc.jpg`,
                       });
                       axios({
-                        method: 'post',
+                        method: 'put',
                         url: `http://api.ibshr.com/api/account/upload/documents/ncrc`,
                         data: bodyFormData,
                         headers: {
                         'Content-Type': 'multipart/form-data',
-                        Authorization: `Bearer ${token}`}
+                        Authorization: `${this.token}`}
                         })
                         .then(function (response) {
+                            debugger
                             self2.setState({ ncrc: val })
                         })
                         .catch(function (response) {
                             //handle error
+                            debugger
                             console.log(response);
                         });
                 break;
@@ -219,8 +235,12 @@ export default class UploadDocs extends React.Component {
 
 
     render() {
+        debugger
         return (
             <View style={[styles.imgBackground, { paddingTop: 100, backgroundColor: "#E0E1E3" }]}>
+            <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={{ zIndex: 999, position: 'absolute', top: 40, left: 20 }}>
+					<Icon name='ios-arrow-back' type="ionicon"color='#000'  />
+                </TouchableOpacity>
                 <View style={styles.wraper}>
                     <Text style={styles.h1}>Required  Papers</Text>
                     <Text style={styles.h2}>Please upload all the below required papers</Text>
@@ -360,7 +380,7 @@ export default class UploadDocs extends React.Component {
                     <View>
                         <Text style={{ color: "#0D1C60", textAlign: 'center', fontSize: 24, marginTop: 14, fontWeight: 'bold' }}>No criminal record</Text>
                     </View>
-                    <TouchableOpacity onPress={()=>{this.saveImages()}} style={styles.button}>
+                    <TouchableOpacity onPress={()=>{ this.props.navigation.navigate('DriverTripAccept')}} style={styles.button}>
                         <Text style={{ color: "white" }}>Continue</Text>
                     </TouchableOpacity>
                 </ScrollView>

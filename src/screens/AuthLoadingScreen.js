@@ -5,65 +5,122 @@ import {
   StyleSheet,
   View,
 } from 'react-native';
-import * as firebase from 'firebase'
+import Client from '../API/Client';
+import axios from 'axios';
 
 export class AuthLoadingScreen extends React.Component {
   constructor(props) {
     super(props);
-    this._bootstrapAsync();
+    this.state ={ 
+      new: true
+    }
+    this.token =false;
   }
 
-  // Fetch the token from storage then navigate to our appropriate place
-  _bootstrapAsync =  () => {
-    firebase.auth().onAuthStateChanged((user)=>{
-        console.log('user',user)
-        if(user && user.displayName){
-          const userData=firebase.database().ref('users/'+user.uid);
-          userData.once('value',userData=>{
-            if(userData.val()) {
-              if(userData.val().usertype == 'driver' && userData.val().approved == true){
-                this.props.navigation.navigate('DriverRoot');
-               }
-               else if(userData.val().approved == false) {
-                firebase.auth().signOut();
-                alert('Your account is not approved yet as driver');
-               }
-               else{ 
-                firebase.auth().signOut();
-                alert('Your account not exist as driver');
-               }
-            }
+  componentDidMount(){
+    this.checkValidToken()
+  }
+
+  checkValidToken = () => {
+    AsyncStorage.getAllKeys().then((key) => {
+      debugger
+      if (!key.length) {
+        this.props.navigation.navigate('Reg')
+      }
+      key.forEach(k => {
+        debugger
+        if(k=='MobileNumber'){
+          AsyncStorage.getItem(k).then((mobileNumber) => {
+            debugger
+            this.setState({new : false});
+            if(this.token) return;
+            Client.post('account/phone/verify/create', {
+              "phone":"+962"+mobileNumber,
+              "userType": "DRIVER"
+              })
+              .then( (res) =>{
+                debugger
+                  if(res.data !== "Success resent verify code!") {
+                    this.props.navigation.navigate('UploadDocs',{
+                      phoneId: res.data.phoneId
+                    });
+                  } else {
+                    this.props.navigation.navigate('PinCodeScreen',{
+                      itemId: 1,
+                      phoneId: mobileNumber
+                      }).catch((err)=>{
+                        console.log(err)
+                      })
+                  }
+              })
           })
-        }else{
-          this.props.navigation.navigate('Auth');
+         
         }
-    })
-  };
-
-    // Fetch the token from storage then navigate to our appropriate place
-    bootstrapAsync =  () => {
-      firebase.auth().onAuthStateChanged((user)=>{
-          if(user && user.displayName){
-            const userData=firebase.database().ref('users/'+user.uid);
-            userData.once('value',userData=>{
-               if(userData.val()){
-                  if(userData.val().usertype == 'rider') {
-                    // this.registerForPushNotificationsAsync(user)
-                    this.props.navigation.navigate('Root');
-                  }
-                  else{
-                    firebase.auth().signOut();
-                    alert('Your account not exist');
-                  }
-               }
-            })
-          }else{
-            this.props.navigation.navigate('Auth');
-          }
+        if (k == "Token") {
+          AsyncStorage.getItem(k).then((token) => {
+            debugger
+            if(!token){
+              this.props.navigation.navigate('UploadDocs');
+            }
+            else {
+              this.token =true;
+              Client.defaults.headers['Authorization'] = `Bearer ${token}`;
+                AsyncStorage.setItem('Token', token);
+                this.props.navigation.navigate('DriverTripAccept')
+            }
+            // axios.get(`http://api.ibshr.com/api/account/is-valid`, {
+            //   headers: {
+            //     Accept: 'application/json;charset=UTF-8',
+            //     Authorization: `Bearer ${token}`
+            //   }
+            // }).then((res)=>{
+            //   debugger
+            //   if(res.data.isValidToken) {
+            //     this.setState({new:false})
+                
+            //   }else {
+               
+            //   }
+            // }).catch((res)=>{
+            //   debugger
+            //     this.refreshToken(tokeniz)
+            // })
+          })
+        }
+        AsyncStorage.getItem(k);
       })
-    };
 
-  // Render any loading content that you like here
+
+      // axios.post(`account/is-valid`,{
+      //   headers: {
+      //     Accept: 'application/json;charset=UTF-8',
+      //     Authorization: `Bearer ${token}`
+      // }
+      // })
+    }).done((res)=>{
+      // if(!this.state.new) {
+      //   this.props.navigation.navigate('UploadDocs');
+      // }else {
+      //   this.props.navigation.navigate('Reg')
+      // }
+    });
+  };
+  refreshToken(token) {
+    debugger
+    axios.get(`http://api.ibshr.com/api/account/refresh-token`,{
+                headers: {
+                  Accept: 'application/json;charset=UTF-8',
+                  Authorization: `Bearer ${token}`
+                }
+              }).then((res)=>{
+                debugger
+                AsyncStorage.setItem('Token', res.data.token);
+                Client.defaults.headers['Authorization'] = `Bearer ${token}`;
+                this.props.navigation.navigate('DriverTripAccept')
+              }) .catch ((res)=>{
+                debugger
+              })
+  }
   render() {
     return (
       <View style={styles.IndicatorStyle}>

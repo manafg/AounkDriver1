@@ -3,7 +3,8 @@ import { Text, View, StyleSheet } from "react-native";
 import CollapsibleList from "react-native-collapsible-list";
 import { Icon, Input, Button, ListItem } from 'react-native-elements';
 import Clint from '../API/Client';
-import MapComponent from '../components/MapComponent'
+import MapComponent from '../components/MapComponent';
+import {TextInput} from 'react-native'
 
 
 export default class OffersDetail extends Component {
@@ -199,18 +200,19 @@ export default class OffersDetail extends Component {
                     </View>
                 </CollapsibleList>
                 <Input
+                    inputStyle={{fontSize:20, fontWeight:'bold', color: "#70B32F"}}
                     containerStyle={{ padding: 4 }}
-                    inputContainerStyle={{ marginTop: 0, padding: 5, marginRight: 20, paddingRight: 60 }}
+                    inputContainerStyle={{ marginTop: 0, padding: 5, marginHorizontal:20}}
                     placeholder='Place your Offer'
-                    leftIcon={
-                        <Icon
-                            name='dollar'
-                            type='font-awesome'
-                            size={24}
-                            color='black'
-                        />
-                    }
                 />
+
+                <TextInput 
+                    style={styles.textArea}
+                    multiline={true}
+                    numberOfLines={3}
+                    placeholder="Any Notes ?"
+                    onChangeText={(text) => this.setState({ text })}
+                    value={this.props.text} />
                 <Button
                 style={{marginRight:20, marginLeft:20, marginTop:10}}
                     onPress={this.submitOffer}
@@ -222,7 +224,7 @@ export default class OffersDetail extends Component {
                     //     //     color="white"
                     //     // />
                     // }
-                    title="Set your offer"
+                    title="Submit"
                 />
             </View>
         );
@@ -230,6 +232,16 @@ export default class OffersDetail extends Component {
 }
 
 const styles = StyleSheet.create({
+    textArea: {
+        marginHorizontal:20,
+        borderColor: 'grey',
+        borderWidth: 1,
+        marginTop:20,
+        borderRadius:10,
+        padding: 10,
+        height: 100,
+        justifyContent: "flex-start"
+      },
     map: {
         borderRadius: 10,
         height: 350,

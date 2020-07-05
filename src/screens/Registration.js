@@ -1,7 +1,9 @@
 import React from 'react';
 import Registration  from '../components/register';
-import {StyleSheet,View,StatusBar,AsyncStorage} from 'react-native';
+import {StyleSheet,View,StatusBar,AsyncStorage, TouchableOpacity} from 'react-native';
 import Client from '../API/Client'
+import {  Icon } from 'react-native-elements';
+
 
 export default class RegistrationPage extends React.Component {
     constructor(props){
@@ -28,6 +30,7 @@ export default class RegistrationPage extends React.Component {
   render() {
     return (
         <View style={styles.containerView}>
+        
             <Registration complexity={'any'} onPressRegister={(fname, lname, mobile, email, password)=>this.clickRegister(fname, lname, mobile, email, password)}  onPress={()=>{this.clickRegister()}} onPressBack={()=>{this.props.navigation.goBack()}} loading={this.state.loading}></Registration>
         </View>
     );

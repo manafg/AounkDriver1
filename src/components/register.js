@@ -3,6 +3,7 @@ import { View, ImageBackground, Text, Dimensions, ScrollView, KeyboardAvoidingVi
 import Background from './Background';
 import { Icon, Button, Header, Input, CheckBox } from 'react-native-elements'
 import { colors } from '../common/theme';
+import ErrMeassage from '../API/ErrMeassage'
 
 var { height } = Dimensions.get('window');
 
@@ -25,8 +26,11 @@ export default class Registration extends React.Component {
             lnameValid: true,
             passwordValid: true,
             cnfPwdValid: true,
-            pwdErrorMsg: ''
+            pwdErrorMsg: '',
+            showErr:null,
+            errMeassage:null
         }
+        this.handleClose=this.handleClose.bind(this);
     }
 
     // first name validation
@@ -69,7 +73,9 @@ export default class Registration extends React.Component {
         emailValid || this.emailInput.shake()
         return emailValid
     }
-
+    handleClose() {
+        this.setState({ showErr: false, errMeassage: '' })
+      }
     // password validation
     validatePassword() {
         const { complexity } = this.props
@@ -107,15 +113,9 @@ export default class Registration extends React.Component {
     //register button press for validation
     onPressRegister() {
         if(!this.state.check){
-            Alert.alert(
-                'Warning',
-                'Please accepet condtion and terms and condtion',
-                [
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: true},
-              );
+            this.setState({showErr:true , errMeassage:"Please accept terms and condition", type:"warning"})
         }
+
         const { onPressRegister } = this.props;
         LayoutAnimation.easeInEaseOut();
         const fnameValid = this.validateFirstName();
@@ -141,8 +141,18 @@ export default class Registration extends React.Component {
     render() {
         const { onPressBack, loading } = this.props
         return (
-            <View style={[styles.imgBackground, { paddingTop: 100, backgroundColor: "#E0E1E3" }]}>
+            <View style={[styles.imgBackground, { paddingTop: 20, backgroundColor: "#E0E1E3" }]}>
+                {this.state.showErr &&
+                    <ErrMeassage handleClose={this.handleClose} message={this.state.errMeassage}  showErr = {this.state.showErr} type={this.state.type}/>
+                }
+                <Header 
+                    backgroundColor={colors.TRANSPARENT}
+                    leftComponent={{icon:'ios-arrow-back', type:'ionicon', color:"#000", size: 35, component: TouchableWithoutFeedback,onPress: onPressBack }}
+                    outerContainerStyles={styles.headerContainerStyle}
+                    innerContainerStyles={styles.headerInnerContainer}
+                />
                 <View style={styles.wraper}>
+                
                     <Text style={styles.h1}>Create Account</Text>
                     <Text style={styles.h2}>Let's start with creating your account</Text>
                 </View>

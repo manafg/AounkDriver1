@@ -9,6 +9,7 @@ import {
     TouchableWithoutFeedback,
     Image
 } from 'react-native';
+import Client from '../API/Client'
 import SwitchSelector from "react-native-switch-selector";
 import { withNavigation, DrawerActions } from 'react-navigation'
 import { Header, Icon } from 'react-native-elements';
@@ -37,6 +38,13 @@ export default class NotificationPage extends React.Component {
 
     }
     
+    componentDidMount(){
+        Client.get(`account/me`).then((res)=>{
+
+            debugger
+        })
+    }
+
     render() {
         return (
             <View style={styles.mainView}>
@@ -86,7 +94,7 @@ export default class NotificationPage extends React.Component {
 
                     </View>
                     <View style={styles.earned}>
-                        <Text style={styles.earnedText}>Earned Today</Text>
+                        <Text style={styles.earnedText}>Balance</Text>
                         <Text style={styles.Total}>215.90 JOD</Text>
                     </View>
                     <View style={styles.seprator}></View>

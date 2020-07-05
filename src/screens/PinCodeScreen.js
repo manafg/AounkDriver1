@@ -2,12 +2,14 @@ import React, { Component } from 'react';
 import {
     StyleSheet,
     View,
+    AsyncStorage,
     Image,
     ImageBackground,
     Button,
     TouchableOpacity,
     Text
 } from 'react-native';
+import ErrMessage from '../API/ErrMeassage'
 import SmoothPinCodeInput from 'react-native-smooth-pincode-input';
 import Client from '../API/Client'
 
@@ -20,36 +22,44 @@ export default class PinCodeScreen extends Component {
             phoneId: null
         }
         this.verfiyPin = this.verfiyPin.bind(this);
-        this.resendCode = this.resendCode.bind(this)
+        this.resendCode = this.resendCode.bind(this);
+        this.handleClose= this.handleClose.bind(this)
+
     }
 
     componentDidMount() {
+        debugger
         const { navigation } = this.props;
         let phone = navigation.getParam('mobile', '*********');
-        phone.substring(1)
+        phone =  phone.substring(1)
         phone = '+962' + phone;
         this.setState({ phone: phone }, () => {
             this.verfiyPhone()
         })
     }
 
+    handleClose () {
+        this.setState({showErr:false, errMeassage:''})
+      }
     verfiyPin() {
         console.log('state', this.state.phone)
         Client.patch('account/verify/phone', {
             "phone": this.state.phone,
-            "code": parseInt(this.state.pin)
+            "code": this.state.pin
         }).then((res) => {
+            debugger
             console.log(res)
             this.setState({phoneId: res.data.phoneId},()=>{
                 this.registerUser(this.state.phoneId)
             })
             
-        }).catch((err) => {
-            console.log(err)
+        }).catch((res) => {
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
 
     registerUser(phoneId) {
+        debugger
         const { navigation } = this.props;
         let fname = navigation.getParam('fname', 'NAME');
         let lname = navigation.getParam('lname', 'NAME');
@@ -57,45 +67,62 @@ export default class PinCodeScreen extends Component {
         let password = navigation.getParam('password', '*********');
         let regData = {
             email: email,
-            password: password,
+            password: 'manafG1992@',
             phoneId: phoneId
         }
         console.log('regData',regData)
         Client.defaults.headers['Authorization'] = "";
+        debugger
+        let self= this;
         Client.post('account/user/create', regData).then((res) => {
+            debugger
+            AsyncStorage.setItem('Token', `${res.data.token}`);
+            Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`;
             let profile =
             {
                 "firstName": fname,
                 "lastName": lname,
                 "userId": res.data.user._id
             }
-            console.log(res)
+             let self2 = self;
             Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`
-            Client.post(`account/user/driver/profile`, profile).then((res) => {
+            Client.post(`account/user/profile`, profile).then((res) => {
+                debugger
+                AsyncStorage.setItem('MobileNumber', `${self2.state.phone}`);
                 console.log(res)
-                // AsyncStorage.setItem('Token', res.data.token);
-                // AsyncStorage.setItem('userID', res.data.userProfile.id)
-                // Client.defaults.headers['Authorization'] = `Bearer ${res.data.token}`;
-
+                AsyncStorage.setItem('userID', res.data.user.id)
+                AsyncStorage.setItem('Profile', res.data.user)
                 this.props.navigation.navigate('UploadDocs')
+            }).catch((res)=>{
+                debugger
+                this.setState({showErr:true , errMeassage: res.response.data.error.message})
             })
         }).catch((res) => {
-            console.log(res)
+            debugger
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
+
         })
     }
 
     verfiyPhone() {
+        debugger
         console.log('state', this.state.phone)
+        let self =this;
         Client.post('account/phone/verify/create', {
             "phone": this.state.phone,
             "userType": "DRIVER"
         })
             .then((res) => {
+                debugger
                 if (res.data) {
-                    this.state.phoneId = res.data;
+                    this.state.phoneId = res.data.phoneId;
+                    this.registerUser(res.data.phoneId)
                 } else {
 
                 }
+            }).catch((res)=>{
+                this.setState({showErr:true , errMeassage: res.response.data.error.message})
+
             })
     }
 
@@ -103,13 +130,26 @@ export default class PinCodeScreen extends Component {
         Client.patch('/verify/resend', {
             "phone": this.state.phone,
         }).then((res) => {
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
 
         })
     }
+
+    handleClose () {
+        this.setState({showErr:false, errMeassage:''})
+      }
+
+
     render() {
         let { pin } = this.state
         return (
             <View style={styles.backGround}>
+            {this.state.showErr &&
+                    <ErrMessage message={this.state.errMeassage} handleClose={this.handleClose}  showErr = {this.state.showErr}/>
+            }
+            <TouchableOpacity onPress={() => { this.props.navigation.goBack() }} style={{ zIndex: 999, position: 'absolute', top: 40, left: 20 }}>
+					<Icon name='ios-arrow-back' type="ionicon"color='#000'  />
+                </TouchableOpacity>
                 <View style={styles.Header}>
                     <Text style={styles.subText}>Phone Verify</Text>
                     <Text style={{ color: "#0D1C60", marginTop: 20, fontSize: 16, width: '50%', textAlign: 'center' }}>We sent code to verify your phone</Text>
@@ -119,7 +159,7 @@ export default class PinCodeScreen extends Component {
                 </View>
                 <View style={styles.containerView}>
                     <SmoothPinCodeInput
-                        codeLength={5}
+                        codeLength={6}
                         onFulfill={this.verfiyPin}
                         cellStyleFocused={{
                             borderColor: 'black',

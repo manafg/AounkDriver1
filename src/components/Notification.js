@@ -41,7 +41,7 @@ export default class Notifications extends React.Component {
                       <View style={styles.imageHolder}>
                       <Image
                             style={styles.cabLogoStyle}
-                            source={require('../../assets/images/cablogo.png')}
+                            source={require('../../assets/images/logo.png')}
                           />
                       </View>
                       <View style={styles.statusView}>

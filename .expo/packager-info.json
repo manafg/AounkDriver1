@@ -1,9 +1,9 @@
 {
   "devToolsPort": 19002,
-  "expoServerPort": null,
-  "packagerPort": null,
-  "packagerPid": null,
-  "expoServerNgrokUrl": null,
-  "packagerNgrokUrl": null,
-  "ngrokPid": null
+  "expoServerPort": 19000,
+  "packagerPort": 19001,
+  "packagerPid": 5773,
+  "expoServerNgrokUrl": "https://s4-n6u.aounkapp366.aounkdriver1.exp.direct",
+  "packagerNgrokUrl": "https://packager.s4-n6u.aounkapp366.aounkdriver1.exp.direct",
+  "ngrokPid": 5795
 }

@@ -12,6 +12,7 @@ import { AsyncStorage } from 'react-native';
 import Client from '../API/Client';
 import SwitchSelector from "react-native-switch-selector";
 import Modal from "react-native-modal";
+import ErrMeassage from "../API/ErrMeassage"
 import SideMenuHeader from '../components/SideMenuHeader';
 import axios from 'axios';
 import MapViewDirections from 'react-native-maps-directions';
@@ -91,6 +92,7 @@ export default class DriverTripAccept extends React.Component {
         this.handleGetDirections = this.handleGetDirections.bind(this);
         this._showMessage = this._showMessage.bind(this);
         this._hideMessage = this._hideMessage.bind(this);
+        this.handleClose = this.handleClose.bind(this)
     }
 
     onConnectSocket = () => {
@@ -111,6 +113,8 @@ export default class DriverTripAccept extends React.Component {
     _rejectTrip() {
         Client.patch(`requests/truck/${this.state.recivedNewReq.data.requestId}/reject`).then((res) => {
             this.cancelRequest()
+        }).catch((res)=>{
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
 
@@ -170,13 +174,21 @@ export default class DriverTripAccept extends React.Component {
     componentWillUnmount() {
         Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
             this.setState({ online: "off" })
+        }).catch((res)=>{
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
 
     componentDidMount() {
+        AsyncStorage.getItem("Profile").then((value) => {
+            if(!value){
+                this.setState({showErr:true , errMeassage: "Please fill your profile data", type:"info"})
+            }
+        })
         Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
             this.setState({ online: "off" })
-        }).catch((res) => {
+        }).catch((res)=>{
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
         this.checkStatus()
         this.getRiders();
@@ -186,7 +198,7 @@ export default class DriverTripAccept extends React.Component {
     }
 
     checkStatus() {
-        Client.get(`account/activities/trip`, {}).then((res) => {
+        Client.get(`account/activities`, {}).then((res) => {
             res.data.my_location = res.data.driver_location
             res.data.my_location.lng = res.data.driver_location.lng
             if (res.data.request_status == "DECLINED") { }
@@ -204,16 +216,21 @@ export default class DriverTripAccept extends React.Component {
         })
 
     }
-
+    handleClose() {
+        this.setState({ showErr: false, errMeassage: '' })
+      }
     setOnline(val) {
         if (val == "on") {
             Client.patch(`account/activities/ONLINE`, {}).then((res) => {
                 this.setState({ online: val })
-            }).catch((res) => {
+            }).catch((res)=>{
+                this.setState({showErr:true , errMeassage: res.response.data.error.message})
             })
         } else {
             Client.patch(`account/activities/OFFLINE`, {}).then((res) => {
                 this.setState({ online: val })
+            }).catch((res)=>{
+                this.setState({showErr:true , errMeassage: res.response.data.error.message})
             })
         }
 
@@ -228,7 +245,8 @@ export default class DriverTripAccept extends React.Component {
             setTimeout(() => {
                 this.setState({ modalVisible: true })
             }, 1000)
-        }).catch((res) => {
+        }).catch((res)=>{
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
     _rate() {
@@ -240,7 +258,8 @@ export default class DriverTripAccept extends React.Component {
             setTimeout(() => {
                 this.setState({ modalVisible: true })
             }, 1000)
-        }).catch((res) => {
+        }).catch((res)=>{
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
 
@@ -347,6 +366,7 @@ export default class DriverTripAccept extends React.Component {
                 this.setState({ modalVisible: true })
             }, 1000)
         }).catch((res) => {
+            this.setState({showErr:true , errMeassage: res.response.data.error.message})
         })
     }
 
@@ -373,6 +393,9 @@ export default class DriverTripAccept extends React.Component {
                     animationStyle={{ width: 100, height: 100 }}
                     speed={1}
                 />
+                {this.state.showErr &&
+                    <ErrMeassage handleClose={this.handleClose} message={this.state.errMeassage}  showErr = {this.state.showErr} type={this.state.type}/>
+                }
                 <Header
                     backgroundColor={"#E0E1E3"}
                     leftComponent={{ icon: 'md-menu', type: 'ionicon', color: "#0D1C60", size: 30, component: TouchableWithoutFeedback, onPress: () => { this.props.navigation.dispatch(DrawerActions.toggleDrawer()) } }}
@@ -414,18 +437,18 @@ export default class DriverTripAccept extends React.Component {
                             coordinate={{ latitude: currentLat, longitude: currentLng }}
                             image={require('../../assets/images/Dest.png')}
                         />
-
+                        { destLat && destLng ?
                         <Marker
                             coordinate={{ latitude: destLat, longitude: destLng }}
                             description={'5 min | Amman Jordan'}
                             pinColor={colors.GREEN.default}
                             image={require('../../assets/images/cuurentLoc.png')}
-                        />
-
+                        /> :null
+                        }
                         <MapViewDirections
                             origin={{ latitude: currentLat, longitude: currentLng }}
                             destination={{ latitude: destLat, longitude: destLng }}
-                            apikey={'AIzaSyDZ7HSZZafEkBmuwD2CdHrLJNn3kEm39Fo'}
+                            apikey={'AIzaSyDqnzeDBnNoa_5yDnZj5doqjnoim2YkLKE'}
                         />
 
                     </MapView>

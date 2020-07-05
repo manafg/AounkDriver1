@@ -65,7 +65,7 @@ export default class RideList extends React.Component {
                   <MapViewDirections
                             origin={{latitude: parseInt(item.current.lat), longitude: parseInt(item.current.long)}}
                             destination={{latitude: parseInt(item.destination.lat), longitude: parseInt(item.destination.lng)}}
-                            apikey={'AIzaSyDZ7HSZZafEkBmuwD2CdHrLJNn3kEm39Fo'}
+                            apikey={'AIzaSyDqnzeDBnNoa_5yDnZj5doqjnoim2YkLKE'}
                 />
             
                     <Marker.Animated

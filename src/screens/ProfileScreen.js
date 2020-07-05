@@ -340,17 +340,6 @@ export default class ProfileScreen extends React.Component {
                         />
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.textIconStyle2} onPress={()=>{this.deleteAccount()}}>
-                        <Text style={styles.emailStyle}>Delete Account</Text>
-                        <Icon
-                            name='ios-arrow-forward'
-                            type='ionicon'
-                            color={colors.GREY.iconPrimary}
-                            size={35}
-                            containerStyle={{ right: 20 }}
-                        />
-                    </TouchableOpacity>
-
                     <TouchableOpacity onPress={()=>{this.signOut()}} style={styles.textIconStyle2}>
                         <Text style={styles.emailStyle}>Sign Out</Text>
                         <Icon
